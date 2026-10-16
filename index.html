@@ -46,9 +46,9 @@ header{background:var(--header-bg);color:var(--header-ink);border-bottom:1px sol
 .view-menu button{background:var(--nav-bg);color:var(--nav-ink)}.view-menu button.active,.tab.active{background:var(--accent);color:#fff}.tab{background:var(--accent2);color:var(--nav-ink)}.char.active{background:var(--active-bg);border-color:var(--accent)}.avatar{background:var(--avatar-bg);color:var(--avatar-ink)}.chat-bubble.user{background:var(--chat-user-bg);color:var(--ink)}.note-item.active{background:var(--accent2);color:var(--nav-ink)}.chip,.collapse-toggle{background:var(--accent2);color:var(--nav-ink)}
 .theme-picker{display:inline-flex;align-items:center;gap:7px;background:#ffffffa8;border:1px solid var(--line);border-radius:11px;padding:5px 9px;color:var(--header-ink);font-size:12px;font-weight:700}.theme-picker select{max-width:130px;background:#fff;border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:5px 7px;cursor:pointer;font-size:12px}.theme-picker select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style></head>
-<body><header><div><div class="brand">뚠뚠한 <span>모비일지</span></div><div class="subtitle">마비노기 모바일 · 서버 없는 로컬 숙제 관리</div></div><div class="header-tools"><label class="theme-picker" for="mobiThemeSelect">🎨 테마 <select id="mobiThemeSelect" aria-label="화면 색상 테마"><option value="blue">💙 블루+화이트</option><option value="pink">💗 핑크+화이트</option><option value="yellow">💛 옐로+화이트</option></select></label><span id="saveStatus" class="status" role="status">저장 확인 중</span><button class="secondary" id="undoBtn">↶ 되돌리기</button><button class="secondary" id="exportBtn">JSON 백업</button><button class="secondary" id="importBtn">백업 불러오기</button><button class="secondary" id="settingsBtn">설정</button></div></header>
+<body><header><div><div class="brand">뚠뚠한 <span>모비일지</span></div><div class="subtitle">마비노기 모바일 · 로컬 기록 + 선택형 계정 동기화</div></div><div class="header-tools"><label class="theme-picker" for="mobiThemeSelect">🎨 테마 <select id="mobiThemeSelect" aria-label="화면 색상 테마"><option value="blue">💙 블루+화이트</option><option value="pink">💗 핑크+화이트</option><option value="yellow">💛 옐로+화이트</option></select></label><span id="saveStatus" class="status" role="status">저장 확인 중</span><button class="secondary" id="accountBtn">☁ 계정 연결</button><button class="secondary" id="undoBtn">↶ 되돌리기</button><button class="secondary" id="exportBtn">JSON 백업</button><button class="secondary" id="importBtn">백업 불러오기</button><button class="secondary" id="settingsBtn">설정</button></div></header>
 <main class="container"><div class="toolbar"><div><h1>숙제 현황</h1><p id="todayText"></p></div><div class="rowtools"><button id="addCharBtn">＋ 캐릭터 추가</button></div></div>
-<div class="notice">일일: 매일 오전 6시 · 주간: 월요일 오전 6시 초기화. 구멍은 주간 7회부터 사용하고 일일 1회가 매일 누적됩니다. 월요일 오전 6시에는 누적분까지 초기화됩니다. 데이터는 이 브라우저에만 저장됩니다.</div>
+<div class="notice">일일: 매일 오전 6시 · 주간: 월요일 오전 6시 초기화. 구멍은 주간 7회부터 사용하고 일일 1회가 매일 누적됩니다. 월요일 오전 6시에는 누적분까지 초기화됩니다. 로그인 전에는 이 브라우저에만 저장됩니다. 계정 연결 후에도 최초 클라우드 저장은 직접 선택해야 합니다.</div>
 <section class="panel character-panel" id="characterPanel"><div class="sidehead"><div><h2>내 캐릭터 <span id="charCount" class="tiny"></span></h2><p>★ 본캐 지정 · ↑↓ 순서 변경 · 이름을 눌러 선택</p></div><button type="button" class="secondary char-fold-btn" id="charFoldBtn" aria-controls="characterContent" aria-expanded="true">▾ 접기</button></div><div class="character-content" id="characterContent"><div class="character-list" id="characterList"></div><div class="formrow" style="margin-top:12px"><input id="newCharName" placeholder="캐릭터 이름"><button id="quickAddBtn">＋ 추가</button></div></div></section>
 <nav class="view-menu" aria-label="메뉴"><button data-view="aggregate" class="active">전체 집계</button><button data-view="tasks">숙제 관리</button><button data-view="memo">메모</button><button data-view="chat">🤖 뚠비서</button></nav>
 <section id="aggregateView" class="view-panel"><div class="panel"><div class="toolbar"><div><h2>전체 캐릭터 숙제 집계</h2><p>행은 캐릭터, 열은 숙제입니다. 체크 항목은 칸을 눌러 바로 변경할 수 있어요.</p></div><div class="rowtools"><button class="secondary" id="matrixFilter">미완료만 보기: 꺼짐</button></div></div><div class="tabs" id="aggregateTabs"><button class="tab active" data-period="daily">일일</button><button class="tab" data-period="weekly">주간</button></div><div class="helper" style="margin-bottom:10px">✓ 완료 · ✕ 미완료 · 숫자는 사용 횟수/현재 사용 가능 횟수 (결계·구멍). 표는 좌우로 스크롤할 수 있습니다.</div><div id="matrixWrap" class="matrix-wrap"></div></div></section>
@@ -57,7 +57,7 @@ header{background:var(--header-bg);color:var(--header-ink);border-bottom:1px sol
 <section id="chatView" class="view-panel" hidden><div class="panel chat-layout"><div><div class="rowtools" style="justify-content:space-between"><h2>🤖 뚠비서</h2><button type="button" class="secondary" id="chatHelpBtn">❔ 도움말 · 명령어</button></div><p>말하듯 숙제를 기록해 보세요. 변경 전 반드시 확인을 받아요. 인터넷·API 없이 이 기기에서만 작동합니다.</p></div><div id="chatLog" class="chat-log" role="log" aria-live="polite"><div class="chat-bubble bot">뚠비서 대기 중임당! 🤖
 “뚠 결계 3번 했어”, “오늘 무료뽑기 안 한 캐릭터 알려줘”처럼 편하게 말씀해주세용!
 기록은 확인하신 다음에 적용해드릴게용.</div></div><div id="chatPreview" class="chat-preview" hidden></div><div class="chat-hints"><button class="secondary" data-chat-example="결계 남은 캐릭터 알려줘">결계 남은 캐릭터</button><button class="secondary" data-chat-example="오늘 무료뽑기 안 한 캐릭터 누구야?">무료뽑기 미완료</button><button class="secondary" data-chat-example="선택한 캐릭터 일일숙제 다 했어">선택 캐릭터 일일 완료</button><button class="secondary" id="magicStartBtn">🧮 마도저항 계산</button></div><div class="chat-hints" id="chatFavorites"><button class="secondary" data-chat-example="오늘 남은 숙제 알려줘">오늘 남은 숙제</button><button class="secondary" data-chat-example="주간 남은 숙제 알려줘">주간 미완료</button><button class="secondary" data-chat-example="카브락 남은 캐릭터 알려줘">카브락 미완료</button><button class="secondary" id="chatPin">☆ 현재 입력 즐겨찾기</button></div><div class="chat-hints" id="chatRecent"></div><div class="chat-compose"><textarea id="chatInput" rows="2" placeholder="예: 뚠 결계 2번 했고 부캐1 무료뽑기 끝냈어 (Enter 전송, Shift+Enter 줄바꿈)"></textarea><button id="chatSend">보내기 ↗</button></div><p class="helper">지원 표현을 규칙으로 이해하는 무료 로컬 비서입니다. 모호한 명령은 임의로 적용하지 않으며, 대화 내용은 별도 서버로 전송되지 않습니다.</p></div></section>
-</main><footer>뚠뚠한 모비일지 · 무료 · 계정/서버/클라우드 없음 · 같은 브라우저에서 파일을 열어 주세요</footer>
+</main><footer>뚠뚠한 모비일지 · 무료 · 로컬 저장 기본 · 계정 연결 시 선택형 클라우드 동기화</footer>
 <div class="reminder-backdrop" id="barrierReminder" role="presentation"><div class="reminder-dialog" role="alertdialog" aria-modal="true" aria-labelledby="barrierReminderTitle"><h2 id="barrierReminderTitle">🔔 결계 알림</h2><p id="barrierReminderTime"></p><p>아직 결계 횟수가 남은 캐릭터가 있어요.</p><ul id="barrierReminderList"></ul><div class="modal-actions"><button type="button" id="barrierReminderClose">확인</button></div></div></div>
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-label="설정 창"><button class="modal-close-x" id="modalCloseX" aria-label="닫기">×</button><div id="modalContent"></div></div></div><input type="file" id="importFile" accept=".json,application/json" hidden>
 <script>
@@ -86,7 +86,7 @@ if(!s.characters.some(c=>c.id===s.selected))s.selected=s.characters[0]?.id||null
 let state;let initialError='';try{const raw=localStorage.getItem(STORE);state=raw?migrate(JSON.parse(raw)):fresh()}catch(e){state=fresh();initialError='기존 데이터를 읽지 못했습니다. 기존 저장 내용은 덮어쓰지 않았습니다. 먼저 JSON 백업을 확인해 주세요.'}
 let history=[],lastSaved='',saveBlocked=!!initialError;
 function snapshot(){history.push(clone(state));if(history.length>35)history.shift()}
-function persist(renderNow=true){if(saveBlocked){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');if(renderNow)render();return;}try{localStorage.setItem(STORE,JSON.stringify(state));lastSaved=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});$('saveStatus').textContent='✓ 자동 저장 '+lastSaved;$('saveStatus').classList.remove('bad')}catch(e){$('saveStatus').textContent='⚠ 저장 실패 · 백업 권장';$('saveStatus').classList.add('bad');alert('브라우저 저장에 실패했습니다. JSON 백업을 내려받아 주세요.')}if(renderNow)render()}
+function persist(renderNow=true){if(saveBlocked){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');if(renderNow)render();return;}try{localStorage.setItem(STORE,JSON.stringify(state));lastSaved=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});$('saveStatus').textContent='✓ 자동 저장 '+lastSaved;$('saveStatus').classList.remove('bad')}catch(e){$('saveStatus').textContent='⚠ 저장 실패 · 백업 권장';$('saveStatus').classList.add('bad');alert('브라우저 저장에 실패했습니다. JSON 백업을 내려받아 주세요.')}if(renderNow)render();if(window.mobiCloudReady)cloudQueueSave()}
 function mutate(fn){snapshot();fn();persist()}
 function pad(n){return String(n).padStart(2,'0')}
 function dailyAnchor(now=new Date()){const d=new Date(now);const [h,m]=(state.settings.dailyHour||'06:00').split(':').map(Number);d.setHours(h,m,0,0);if(now<d)d.setDate(d.getDate()-1);return d}
@@ -124,7 +124,7 @@ if(t.kind==='group'){
 section.appendChild(header);if(t.kind==='counter'){const row=document.createElement('div');row.className='task-row';const value=Math.max(0,Number(rec[t.id]||0)),max=maxCount(t.id);row.innerHTML=`<div class="task-label"><div class="task-name">${esc(t.name)} 사용 횟수</div><div class="task-meta">${t.id==='barrier'?'매주 월요일 06:00에 7회 초기화':`주간 7회 먼저 사용 · 일일 누적 ${max-7}회 · 월요일 06:00 전체 초기화`}</div></div><div class="counter"><button class="secondary minus" aria-label="${esc(t.name)} 1회 취소">−</button><strong>${value} / ${max}</strong><button class="secondary plus" aria-label="${esc(t.name)} 1회 완료">＋</button></div>`;row.querySelector('.minus').disabled=value<=0;row.querySelector('.plus').disabled=value>=max;row.querySelector('.minus').onclick=()=>changeCounter(c.id,t.id,-1);row.querySelector('.plus').onclick=()=>changeCounter(c.id,t.id,1);section.appendChild(row)}else for(const ch of showing){const row=document.createElement('label');row.className='task-row';row.innerHTML=`<input type="checkbox" ${rec[ch.id]?'checked':''}><span class="task-label ${rec[ch.id]?'done':''}"><span class="task-name">${esc(ch.name)}</span>${t.kind==='group'?`<span class="task-meta" style="display:block">목표 ${Number(ch.target||1)}개 · 완료 여부 체크</span>`:''}</span>`;row.querySelector('input').onchange=e=>changeCheck(c.id,state.period,ch.id,e.target.checked);section.appendChild(row)}box.appendChild(section)}if(!visible)box.innerHTML='<div class="empty">표시할 미완료 숙제가 없습니다.</div>'}
 function renderSummary(){const c=selectedChar(),s=c?stats(c.id,state.period):{done:0,total:0};$('doneCount').textContent=s.done;$('leftCount').textContent=s.total-s.done;const pct=s.total?Math.round(100*s.done/s.total):0;$('progressText').textContent=pct+'%';$('progressBar').style.width=pct+'%';$('todayText').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'})+' · '+(c?c.name+' 선택됨':'캐릭터를 추가해 주세요')}
 const memoEditSessions=new Set();
-function renderNotes(){const list=$('noteList'),editor=$('noteEditor');list.innerHTML='';for(const note of state.notes){const b=document.createElement('button');b.className='note-item'+(note.id===state.noteSelected?' active':'');b.textContent=note.title?.trim()||'제목 없는 메모';b.onclick=()=>{memoEditSessions.clear();state.noteSelected=note.id;persist()};list.appendChild(b)}const n=state.notes.find(x=>x.id===state.noteSelected);if(!n){editor.innerHTML='<div class="empty">새 메모를 추가해 주세요.</div>';return}editor.innerHTML=`<label for="noteTitle">제목</label><input id="noteTitle" placeholder="메모 제목"><label for="noteBody">내용</label><textarea id="noteBody" placeholder="메모 내용을 자유롭게 입력하세요."></textarea><div class="rowtools" style="margin-top:12px"><span class="helper">입력 시 자동 저장</span><button class="danger" id="deleteNoteBtn">메모 삭제</button></div>`;$('noteTitle').value=n.title||'';$('noteBody').value=n.body||'';for(const [id,key] of [['noteTitle','title'],['noteBody','body']])$(id).addEventListener('input',e=>{if(!memoEditSessions.has(n.id)){snapshot();memoEditSessions.add(n.id)}n[key]=e.target.value;if(saveBlocked){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');return}try{localStorage.setItem(STORE,JSON.stringify(state));$('saveStatus').textContent='✓ 자동 저장 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}catch(err){$('saveStatus').textContent='⚠ 저장 실패';$('saveStatus').classList.add('bad')}if(key==='title'){const selected=list.querySelector('.active');if(selected)selected.textContent=n.title.trim()||'제목 없는 메모'}});$('deleteNoteBtn').onclick=()=>{if(confirm('이 메모를 삭제할까요?')){memoEditSessions.clear();mutate(()=>{state.notes=state.notes.filter(x=>x.id!==n.id);state.noteSelected=state.notes[0]?.id||null})}}}
+function renderNotes(){const list=$('noteList'),editor=$('noteEditor');list.innerHTML='';for(const note of state.notes){const b=document.createElement('button');b.className='note-item'+(note.id===state.noteSelected?' active':'');b.textContent=note.title?.trim()||'제목 없는 메모';b.onclick=()=>{memoEditSessions.clear();state.noteSelected=note.id;persist()};list.appendChild(b)}const n=state.notes.find(x=>x.id===state.noteSelected);if(!n){editor.innerHTML='<div class="empty">새 메모를 추가해 주세요.</div>';return}editor.innerHTML=`<label for="noteTitle">제목</label><input id="noteTitle" placeholder="메모 제목"><label for="noteBody">내용</label><textarea id="noteBody" placeholder="메모 내용을 자유롭게 입력하세요."></textarea><div class="rowtools" style="margin-top:12px"><span class="helper">입력 시 자동 저장</span><button class="danger" id="deleteNoteBtn">메모 삭제</button></div>`;$('noteTitle').value=n.title||'';$('noteBody').value=n.body||'';for(const [id,key] of [['noteTitle','title'],['noteBody','body']])$(id).addEventListener('input',e=>{if(!memoEditSessions.has(n.id)){snapshot();memoEditSessions.add(n.id)}n[key]=e.target.value;if(saveBlocked){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');return}try{localStorage.setItem(STORE,JSON.stringify(state));$('saveStatus').textContent='✓ 자동 저장 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}catch(err){$('saveStatus').textContent='⚠ 저장 실패';$('saveStatus').classList.add('bad')}if(window.mobiCloudReady)cloudQueueSave();if(key==='title'){const selected=list.querySelector('.active');if(selected)selected.textContent=n.title.trim()||'제목 없는 메모'}});$('deleteNoteBtn').onclick=()=>{if(confirm('이 메모를 삭제할까요?')){memoEditSessions.clear();mutate(()=>{state.notes=state.notes.filter(x=>x.id!==n.id);state.noteSelected=state.notes[0]?.id||null})}}}
 
 function applyMobiTheme(){
  const theme=['blue','pink','yellow'].includes(state.ui.theme)?state.ui.theme:'blue';
@@ -182,7 +182,7 @@ $('newNoteBtn').onclick=()=>mutate(()=>{const id='note_'+Date.now().toString(36)
 $('settingsBtn').onclick=()=>{modal(`<h2>설정</h2><p>초기화 시간은 게임 규칙에 맞게 변경할 수 있습니다. 결계·구멍의 횟수 계산에도 적용됩니다.</p><div class="settings-grid"><div><label>일일 초기화</label><input type="time" id="dailyHour" value="${esc(state.settings.dailyHour)}"></div><div><label>주간 초기화 요일</label><select id="weeklyDay">${['일','월','화','수','목','금','토'].map((n,i)=>`<option value="${i}" ${Number(state.settings.weeklyDay)===i?'selected':''}>${n}요일</option>`).join('')}</select></div><div><label>주간 초기화 시간</label><input type="time" id="weeklyHour" value="${esc(state.settings.weeklyHour)}"></div><div><label>결계 정각 알림</label><select id="barrierReminderEnabled"><option value="off">OFF (기본)</option><option value="on">ON · 팝업 + 짧은 알림음</option></select></div><div><label>표시 밀도</label><select id="density"><option value="normal">기본</option><option value="compact">촘촘하게</option></select></div><div><label>글자 크기</label><select id="fontSize">${[12,13,14,15,16,18].map(n=>`<option value="${n}">${n}px</option>`).join('')}</select></div></div><div class="rowtools" style="margin-top:14px"><button type="button" class="secondary" id="testBarrierReminder">🔔 결계 알림 테스트</button></div><p class="helper" style="margin-top:8px">테스트는 알림 설정과 남은 결계 횟수를 확인하고 즉시 팝업을 띄웁니다. 실제 정각 알림과는 별개입니다.</p><div class="modal-actions"><button class="secondary" id="cancel">취소</button><button id="saveSettings">저장</button></div>`);$('barrierReminderEnabled').value=state.ui.barrierReminderEnabled?'on':'off';$('density').value=state.ui.density;$('fontSize').value=String(state.ui.fontSize);$('cancel').onclick=closeModal;$('testBarrierReminder').onclick=()=>{const remaining=remainingBarriers();if(!remaining.length)return alert('모든 캐릭터의 결계가 완료되어 알림 대상이 없습니다.');if($('barrierReminderEnabled').value!=='on')return alert('결계 정각 알림을 ON으로 바꾸고 저장해 주세요.');unlockReminderAudio();closeModal();showBarrierReminder(remaining,new Date())};$('saveSettings').onclick=()=>{mutate(()=>{for(const k of ['dailyHour','weeklyDay','weeklyHour'])state.settings[k]=$(k).value;state.ui.barrierReminderEnabled=$('barrierReminderEnabled').value==='on';state.ui.density=$('density').value;state.ui.fontSize=Number($('fontSize').value)});closeModal()}};
 function downloadBackup(data,name='mobi-homework-backup-v8.json'){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 $('exportBtn').onclick=()=>{downloadBackup(state);mobiMarkBackup();};
-$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const incoming=migrate(JSON.parse(await f.text()));if(!confirm('현재 데이터를 새 백업 내용으로 교체할까요? 기존 데이터는 먼저 자동으로 JSON 백업합니다.'))return;downloadBackup(state,'mobi-before-import.json');snapshot();memoEditSessions.clear();state=incoming;saveBlocked=false;persist();alert('백업을 불러왔습니다.')}catch(err){alert('백업을 불러오지 못했습니다: '+err.message)}finally{e.target.value=''}};
+$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const incoming=migrate(JSON.parse(await f.text()));if(!confirm('현재 데이터를 새 백업 내용으로 교체할까요? 기존 데이터는 먼저 자동으로 JSON 백업합니다.'))return;downloadBackup(state,'mobi-before-import.json');snapshot();memoEditSessions.clear();if(typeof cloudPause==='function')cloudPause('백업을 불러왔어용. 클라우드에 반영할지 다시 선택해 주세용.');state=incoming;saveBlocked=false;persist();alert('백업을 불러왔습니다. 계정 연결 상태라면 ☁ 계정 연결에서 클라우드 저장을 다시 선택해 주세요.')}catch(err){alert('백업을 불러오지 못했습니다: '+err.message)}finally{e.target.value=''}};
 if(initialError){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');alert(initialError)}else persist(false);
 render();
 
@@ -659,7 +659,7 @@ function mobiGuideHtml(){return `<h2>💜 뚠뚠한 모비일지 가이드</h2>
  <p><strong>🧙 캐릭터와 숙제 관리</strong><br>캐릭터를 추가하고 일일·주간 숙제를 체크해용. 전체 집계에서 여러 캐릭터의 진행 상황을 한눈에 볼 수 있어용.</p>
  <p><strong>🤖 뚠비서</strong><br>남은 숙제를 물어보거나 숙제 완료를 기록하고, 캐릭터 애칭도 등록할 수 있어용. 뚠비서 탭의 ❔ 도움말에서 명령어 예시를 눌러보세용.</p>
  <p><strong>📝 메모와 설정</strong><br>메모를 남기고 글자 크기, 숙제 항목, 알림 등을 조절할 수 있어용.</p>
- <p><strong>⚠️ 저장 방식 주의!</strong><br>이 프로그램은 로그인이나 서버 없이 작동해요. 기록은 <strong>현재 브라우저의 로컬 저장소</strong>에 저장되므로 브라우저 데이터 삭제·초기화, 다른 브라우저나 기기 사용, 파일 위치 변경 등에 따라 기록이 사라지거나 보이지 않을 수 있어용.</p>
+ <p><strong>⚠️ 저장 방식 주의!</strong><br>계정에 연결하지 않으면 기록은 <strong>현재 브라우저의 로컬 저장소</strong>에 저장되므로 브라우저 데이터 삭제·초기화, 다른 브라우저나 기기 사용, 파일 위치 변경 등에 따라 기록이 사라지거나 보이지 않을 수 있어용.</p>
  <p><strong>💾 JSON 수동 백업 강력 권장</strong><br>상단의 <strong>JSON 백업</strong> 버튼으로 파일을 자주 저장해 주세요! 문제가 생기면 <strong>백업 불러오기</strong>로 복구할 수 있어용. 7일마다 백업을 권장하는 알림도 띄워드릴게용. 백업 파일은 안전한 곳에 보관해 주세용.</p>
  </div>`}
 function mobiShowGuide(firstTime){
@@ -690,4 +690,229 @@ function mobiCheckBackupReminder(){
 // 장시간 열린 탭도 확인하되, 가이드/다른 설정창 위에 겹쳐 띄우지 않습니다.
 setInterval(mobiCheckBackupReminder,60*60*1000);
 
+
+// 계정 연결: 기존 로컬 데이터 보존이 최우선입니다.
+const CLOUD_CFG_KEY='ttoonMobiCloudConfigV1';
+const CLOUD_SESSION_KEY='ttoonMobiCloudSessionV1';
+let cloudConfig=null,cloudSession=null,cloudUsername='',cloudEnabled=false;
+let cloudVersion=null,cloudTimer=null,cloudBusy=false,cloudDirty=false;
+const cloudStatus=message=>{const el=$('accountBtn');if(el)el.textContent=message};
+try{cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CFG_KEY)||'null')}catch{}
+try{cloudSession=JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{}
+function cloudPause(reason=''){
+ cloudEnabled=false;cloudDirty=false;clearTimeout(cloudTimer);cloudVersion=null;
+ cloudStatus(cloudSession?'☁ 연결 대기':'☁ 계정 연결');
+ if(reason)console.info('동기화 중단:',reason);
+}
+function cloudEndpoint(){return cloudConfig?.url?.replace(/\/$/,'')||''}
+function cloudValidConfig(){
+ try{const u=new URL(cloudEndpoint());return u.protocol==='https:'&&u.hostname.endsWith('.supabase.co')&&typeof cloudConfig?.key==='string'&&cloudConfig.key.length>10}catch{return false}
+}
+async function cloudRequest(path,options={}){
+ if(!cloudValidConfig())throw Error('Supabase 주소와 Publishable key를 확인해 주세용.');
+ const res=await fetch(cloudEndpoint()+path,{
+  ...options,headers:{'apikey':cloudConfig.key,'content-type':'application/json',...(options.headers||{})}
+ });
+ const text=await res.text();let data={};try{data=text?JSON.parse(text):{}}catch{}
+ if(!res.ok)throw Error(data.error_description||data.message||data.error||`서버 응답 ${res.status}`);
+ return data;
+}
+async function cloudToken(){
+ if(!cloudSession?.access_token)throw Error('로그인이 필요해용.');
+ if(Date.now()<(cloudSession.expires_at||0)*1000-90000)return cloudSession.access_token;
+ if(!cloudSession.refresh_token)throw Error('로그인을 다시 해주세용.');
+ const next=await cloudRequest('/auth/v1/token?grant_type=refresh_token',{
+  method:'POST',body:JSON.stringify({refresh_token:cloudSession.refresh_token})
+ });
+ cloudSession={...next,expires_at:Math.floor(Date.now()/1000)+(next.expires_in||3600)};
+ localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(cloudSession));
+ return cloudSession.access_token;
+}
+async function cloudFetchRow(){
+ const token=await cloudToken();
+ const rows=await cloudRequest('/rest/v1/mobi_data?select=data,updated_at&user_id=eq.'+encodeURIComponent(cloudSession.user.id),{
+  headers:{authorization:'Bearer '+token}
+ });
+ return Array.isArray(rows)?rows[0]||null:null;
+}
+async function cloudWrite(snapshot,version){
+ const token=await cloudToken();
+ const userId=cloudSession.user.id;
+ const now=new Date().toISOString();
+ if(version===null){
+  // 빈 서버에만 최초 생성. 기존 서버 데이터를 덮어쓰지 않습니다.
+  const response=await fetch(cloudEndpoint()+'/rest/v1/mobi_data',{
+   method:'POST',headers:{apikey:cloudConfig.key,authorization:'Bearer '+token,'content-type':'application/json',prefer:'return=representation'},
+   body:JSON.stringify({user_id:userId,data:snapshot,updated_at:now})
+  });
+  if(response.status===409)throw Error('다른 기기에 클라우드 데이터가 생겼어용. 다시 연결해 확인해 주세용.');
+  const result=await response.json().catch(()=>[]);
+  if(!response.ok)throw Error(result.message||`저장 실패 (${response.status})`);
+  return result[0]?.updated_at||now;
+ }
+ // 읽어 온 버전과 동일할 때만 저장해 다른 기기의 수정을 보호합니다.
+ const rows=await cloudRequest('/rest/v1/mobi_data?user_id=eq.'+encodeURIComponent(userId)+'&updated_at=eq.'+encodeURIComponent(version),{
+  method:'PATCH',headers:{authorization:'Bearer '+token,prefer:'return=representation'},
+  body:JSON.stringify({data:snapshot,updated_at:now})
+ });
+ if(!Array.isArray(rows)||rows.length!==1)throw Error('다른 기기에서 데이터가 변경되었어용. 자동 저장을 멈췄으니 ☁ 계정 연결에서 확인해 주세용.');
+ return rows[0].updated_at;
+}
+function cloudQueueSave(){
+ if(!cloudEnabled||saveBlocked)return;
+ cloudDirty=true;clearTimeout(cloudTimer);
+ cloudTimer=setTimeout(cloudFlush,1100);
+ cloudStatus('☁ 저장 대기');
+}
+async function cloudFlush(){
+ if(!cloudEnabled||saveBlocked||cloudBusy||!cloudDirty)return;
+ cloudBusy=true;cloudDirty=false;
+ const copy=clone(state),previous=cloudVersion;
+ cloudStatus('☁ 저장 중');
+ try{
+  cloudVersion=await cloudWrite(copy,previous);
+  cloudStatus('☁ 저장됨');
+ }catch(e){
+  cloudPause();cloudStatus('⚠ 동기화 중단');
+  alert('클라우드 저장을 멈췄어용. 브라우저 기록은 그대로예용.\n'+e.message+'\n☁ 계정 연결에서 확인해 주세용.');
+ }finally{
+  cloudBusy=false;
+  if(cloudEnabled&&cloudDirty)cloudQueueSave();
+ }
+}
+function cloudShowRecoveryCode(area,value,titleText){
+ area.replaceChildren();
+ const title=document.createElement('h3');title.textContent=titleText;area.appendChild(title);
+ const code=document.createElement('textarea');code.readOnly=true;code.style.width='100%';code.rows=3;code.value=value;area.appendChild(code);
+ const tip=document.createElement('p');tip.className='helper';tip.textContent='이 코드는 이번 한 번만 표시돼용. 개인 장소에 저장하고 채팅이나 GitHub에 올리지 마세용.';area.appendChild(tip);
+ const ok=document.createElement('button');ok.textContent='복구 코드를 안전하게 보관했어용';ok.onclick=()=>cloudModal();area.appendChild(ok);
+}
+function cloudModal(){
+ const connected=!!cloudSession?.user?.id;
+ modal(`<h2>☁ 뚠모비 계정</h2>
+ <p class="helper">로컬 기록은 자동으로 덮어쓰지 않아용. 첫 동기화는 직접 선택해야 해용. 기존 11캐릭터 기록을 먼저 JSON 백업해 주세용.</p>
+ <div class="field"><label>Supabase Project URL</label><input id="cloudUrl" placeholder="https://프로젝트ID.supabase.co" value="${esc(cloudConfig?.url||'')}"></div>
+ <div class="field"><label>Publishable key (공개용 키만)</label><input id="cloudKey" autocomplete="off" placeholder="sb_publishable_... 또는 anon 공개 키" value="${esc(cloudConfig?.key||'')}"></div>
+ <button class="secondary" id="cloudSaveConfig">연결 설정 저장</button>
+ <div id="cloudAccountSection" style="margin-top:14px"></div>`);
+ $('cloudSaveConfig').onclick=()=>{
+  const next={url:$('cloudUrl').value.trim().replace(/\/$/,''),key:$('cloudKey').value.trim()};
+  const changed=JSON.stringify(next)!==JSON.stringify(cloudConfig);
+  cloudConfig=next;localStorage.setItem(CLOUD_CFG_KEY,JSON.stringify(next));
+  if(changed){cloudPause();cloudSession=null;localStorage.removeItem(CLOUD_SESSION_KEY);cloudUsername=''}
+  if(!cloudValidConfig())return alert('Project URL과 Publishable key를 확인해 주세용. 비밀키는 입력하지 마세용.');
+  alert('연결 설정을 저장했어용!');cloudModal();
+ };
+ const area=$('cloudAccountSection');
+ if(!connected){
+  area.innerHTML=`<div class="field"><label>아이디 (영문 소문자·숫자·_ / 3~20자)</label><input id="cloudUsername" autocomplete="username"></div>
+  <div class="field"><label>비밀번호 (12자 이상)</label><input id="cloudPassword" type="password" autocomplete="current-password"></div>
+  <div class="rowtools"><button id="cloudLogin">로그인</button><button class="secondary" id="cloudSignup">회원가입</button></div>
+  <div class="rowtools" style="margin-top:10px"><button class="secondary" id="cloudRecover">🔑 복구 코드로 비밀번호 재설정</button></div>`;
+  async function auth(action){
+   if(!cloudValidConfig())return alert('먼저 연결 설정을 저장해 주세용.');
+   const username=$('cloudUsername').value.trim(),password=$('cloudPassword').value;
+   if(!/^[a-z0-9_]{3,20}$/.test(username)||password.length<12)return alert('아이디 형식과 12자 이상 비밀번호를 확인해 주세용.');
+   try{
+    const data=await cloudRequest('/functions/v1/mobi-auth',{
+     method:'POST',body:JSON.stringify({action,username,password})
+    });
+    if(!data.session?.user?.id||!data.session.access_token)throw Error('세션이 응답에 없어요.');
+    cloudPause();cloudSession={...data.session,expires_at:data.session.expires_at||Math.floor(Date.now()/1000)+(data.session.expires_in||3600)};
+    cloudUsername=username;localStorage.setItem(CLOUD_SESSION_KEY,JSON.stringify(cloudSession));
+    if(data.recovery_code){
+     // 복구 코드는 재표시되지 않습니다. 복사나 저장을 확인할 때까지 모달 유지.
+     cloudShowRecoveryCode(area,data.recovery_code,'🔑 복구 코드 (이번 한 번만 표시)');
+    }else cloudModal();
+    cloudStatus('☁ 연결 대기');
+   }catch(e){alert('계정 요청 실패: '+e.message)}
+  }
+  $('cloudLogin').onclick=()=>auth('login');$('cloudSignup').onclick=()=>auth('signup');
+  $('cloudRecover').onclick=()=>{
+   area.innerHTML=`<h3>🔑 비밀번호 복구</h3><p class="helper">가입 시 받은 복구 코드 48자리와 새 비밀번호를 입력해용. 성공하면 새 복구 코드를 반드시 저장해용.</p>
+    <div class="field"><label>아이디</label><input id="recoverName" autocomplete="username"></div>
+    <div class="field"><label>복구 코드 (48자리)</label><input id="recoverCode" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label>새 비밀번호 (12자 이상)</label><input id="recoverPassword" type="password" autocomplete="new-password"></div>
+    <div class="rowtools"><button id="recoverSubmit">비밀번호 재설정</button><button class="secondary" id="recoverCancel">취소</button></div>`;
+   $('recoverCancel').onclick=()=>cloudModal();
+   $('recoverSubmit').onclick=async()=>{
+    const username=$('recoverName').value.trim(),recovery_code=$('recoverCode').value.trim(),new_password=$('recoverPassword').value;
+    if(!/^[a-z0-9_]{3,20}$/.test(username)||!/^[a-fA-F0-9]{48}$/.test(recovery_code)||new_password.length<12||new_password.length>128)return alert('아이디, 복구 코드 48자리, 새 비밀번호 12~128자를 확인해 주세용.');
+    if(!confirm('비밀번호를 변경하고 기존 복구 코드를 폐기할까요?'))return;
+    $('recoverSubmit').disabled=true;
+    try{
+     const data=await cloudRequest('/functions/v1/mobi-auth',{method:'POST',body:JSON.stringify({action:'recover',username,recovery_code,new_password})});
+     if(!data.recovery_code)throw Error('새 복구 코드가 반환되지 않았어용.');
+     cloudShowRecoveryCode(area,data.recovery_code,'비밀번호 변경 완료 · 새 복구 코드');
+    }catch(e){alert('복구 실패: '+e.message);cloudModal()}
+   };
+  };
+  return;
+ }
+ area.innerHTML=`<p class="helper">로그인됨 · 사용자 ID ${esc(cloudSession.user.id.slice(0,8))}…</p>
+ <p class="helper" style="margin:8px 0">${cloudEnabled?'☁ 자동 동기화 켜짐':'⏸ 자동 동기화 꺼짐'} · 로컬 캐릭터 ${state.characters.length}명</p>
+ <div class="rowtools"><button id="cloudInspect">클라우드 데이터 확인·연결</button><button class="secondary" id="cloudLogout">로그아웃</button></div>
+ <div class="rowtools" style="margin-top:10px"><button class="secondary" id="cloudRotate">🔑 복구 코드 재발급</button></div>`;
+ $('cloudRotate').onclick=()=>{
+  area.innerHTML=`<h3>🔑 복구 코드 재발급</h3><p class="helper">현재 비밀번호를 입력하면 기존 복구 코드가 폐기돼용.</p>
+   <div class="field"><label>현재 비밀번호</label><input id="rotatePassword" type="password" autocomplete="current-password"></div>
+   <div class="rowtools"><button id="rotateSubmit">새 복구 코드 발급</button><button class="secondary" id="rotateCancel">취소</button></div>`;
+  $('rotateCancel').onclick=()=>cloudModal();
+  $('rotateSubmit').onclick=async()=>{
+   const password=$('rotatePassword').value;
+   if(!password)return alert('현재 비밀번호를 입력해 주세용.');
+   if(!confirm('기존 복구 코드를 폐기하고 새 코드를 발급할까요?'))return;
+   $('rotateSubmit').disabled=true;
+   try{
+    const token=await cloudToken();
+    const data=await cloudRequest('/functions/v1/mobi-auth',{method:'POST',headers:{authorization:'Bearer '+token},body:JSON.stringify({action:'rotate',password})});
+    if(!data.recovery_code)throw Error('복구 코드가 반환되지 않았어용.');
+    cloudShowRecoveryCode(area,data.recovery_code,'🔑 새 복구 코드 (이번 한 번만 표시)');
+   }catch(e){alert('재발급 실패: '+e.message);cloudModal()}
+  };
+ };
+ $('cloudLogout').onclick=()=>{cloudPause();cloudSession=null;localStorage.removeItem(CLOUD_SESSION_KEY);cloudStatus('☁ 계정 연결');cloudModal()};
+ $('cloudInspect').onclick=async()=>{
+  try{
+   const remote=await cloudFetchRow();
+   const info=remote?`클라우드에 ${Array.isArray(remote.data?.characters)?remote.data.characters.length:'?'}명 캐릭터 데이터가 있어용.`:'클라우드에 저장된 기록이 아직 없어용.';
+   const localCount=state.characters.length;
+   area.innerHTML=`<h3>기록 연결 방식 선택</h3><p class="helper">${esc(info)} 현재 브라우저에는 ${localCount}명 기록이 있어용.</p>
+    <p class="helper" style="margin:8px 0">먼저 JSON 백업을 내려받고 파일이 저장되었는지 확인해 주세용. 두 기록을 자동 병합하지 않아요.</p>
+    <div class="rowtools"><button class="secondary" id="cloudBackup">① 현재 로컬 JSON 백업</button></div>
+    <div class="rowtools" style="margin-top:10px"><button id="cloudUpload">② 로컬 → 클라우드</button>${remote?'<button class="secondary" id="cloudDownload">② 클라우드 → 로컬</button>':''}</div>
+    <p class="helper" style="margin-top:8px">선택한 방향으로 기존 데이터를 교체합니다. 이후 이 탭에서 변경한 내용은 자동 저장됩니다.</p>`;
+   let backupDone=false;
+   $('cloudBackup').onclick=()=>{downloadBackup(state,'ttoonmobi-before-cloud-sync.json');mobiMarkBackup();backupDone=true;alert('다운로드 파일이 실제 저장되었는지 확인해 주세용.')};
+   $('cloudUpload').onclick=async()=>{
+    if(!backupDone)return alert('먼저 ① JSON 백업을 눌러주세용.');
+    if(!confirm(remote?'클라우드의 기존 기록을 현재 브라우저 기록으로 교체할까요? 다른 기기의 기록이 사라질 수 있어용.':'현재 브라우저 기록을 클라우드에 처음 저장할까요?'))return;
+    try{
+     const current=await cloudFetchRow();
+     if((current?.updated_at ?? null)!==(remote?.updated_at ?? null))throw Error('확인하는 동안 클라우드 기록이 변경됐어용. 다시 확인해 주세용.');
+     cloudVersion=await cloudWrite(clone(state),remote?.updated_at||null);
+     cloudEnabled=true;cloudStatus('☁ 저장됨');closeModal();
+     alert('현재 브라우저 기록을 클라우드에 저장했어용!');
+    }catch(e){cloudPause();alert('클라우드 저장 실패: '+e.message)}
+   };
+   if(remote)$('cloudDownload').onclick=async()=>{
+    if(!backupDone)return alert('먼저 ① JSON 백업을 눌러주세용.');
+    if(!confirm('현재 브라우저 기록을 클라우드 기록으로 교체할까요? JSON 백업을 꼭 확인해 주세용.'))return;
+    try{
+     const current=await cloudFetchRow();
+     if(current?.updated_at!==remote.updated_at)throw Error('클라우드 기록이 변경됐어용. 다시 확인해 주세용.');
+     const incoming=migrate(current.data);
+     cloudPause();snapshot();memoEditSessions.clear();state=incoming;saveBlocked=false;persist();
+     cloudVersion=current.updated_at;cloudEnabled=true;cloudStatus('☁ 연결됨');closeModal();
+     alert('클라우드 기록을 불러왔어용. 이제 변경 사항이 자동 저장돼용.');
+    }catch(e){cloudPause();alert('불러오기 실패: '+e.message)}
+   };
+  }catch(e){cloudPause();alert('클라우드 조회 실패: '+e.message)}
+ };
+}
+$('accountBtn').onclick=cloudModal;
+if(cloudSession?.user?.id)cloudStatus('☁ 연결 대기');
+window.mobiCloudReady=true;
+// 새로고침 때 자동으로 로컬/클라우드 데이터를 합치거나 덮어쓰지 않습니다.
+// 매번 '클라우드 데이터 확인·연결'에서 방향을 선택합니다.
 </script></body></html>
