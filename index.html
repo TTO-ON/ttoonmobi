@@ -693,11 +693,13 @@ setInterval(mobiCheckBackupReminder,60*60*1000);
 
 // 계정 연결: 기존 로컬 데이터 보존이 최우선입니다.
 const CLOUD_CFG_KEY='ttoonMobiCloudConfigV1';
+// 공개용 Supabase 연결 설정 (비밀키 아님)
+const CLOUD_DEFAULT_CONFIG={url:'https://xmsisodxavxdatenvaye.supabase.co',key:'sb_publishable_HTUXtsgoG__by-d2E9aQJw_DAeBxGgB'};
 const CLOUD_SESSION_KEY='ttoonMobiCloudSessionV1';
 let cloudConfig=null,cloudSession=null,cloudUsername='',cloudEnabled=false;
 let cloudVersion=null,cloudTimer=null,cloudBusy=false,cloudDirty=false;
 const cloudStatus=message=>{const el=$('accountBtn');if(el)el.textContent=message};
-try{cloudConfig=JSON.parse(localStorage.getItem(CLOUD_CFG_KEY)||'null')}catch{}
+cloudConfig={...CLOUD_DEFAULT_CONFIG};
 try{cloudSession=JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY)||'null')}catch{}
 function cloudPause(reason=''){
  cloudEnabled=false;cloudDirty=false;clearTimeout(cloudTimer);cloudVersion=null;
@@ -791,18 +793,7 @@ function cloudModal(){
  const connected=!!cloudSession?.user?.id;
  modal(`<h2>☁ 뚠모비 계정</h2>
  <p class="helper">로컬 기록은 자동으로 덮어쓰지 않아용. 첫 동기화는 직접 선택해야 해용. 기존 11캐릭터 기록을 먼저 JSON 백업해 주세용.</p>
- <div class="field"><label>Supabase Project URL</label><input id="cloudUrl" placeholder="https://프로젝트ID.supabase.co" value="${esc(cloudConfig?.url||'')}"></div>
- <div class="field"><label>Publishable key (공개용 키만)</label><input id="cloudKey" autocomplete="off" placeholder="sb_publishable_... 또는 anon 공개 키" value="${esc(cloudConfig?.key||'')}"></div>
- <button class="secondary" id="cloudSaveConfig">연결 설정 저장</button>
  <div id="cloudAccountSection" style="margin-top:14px"></div>`);
- $('cloudSaveConfig').onclick=()=>{
-  const next={url:$('cloudUrl').value.trim().replace(/\/$/,''),key:$('cloudKey').value.trim()};
-  const changed=JSON.stringify(next)!==JSON.stringify(cloudConfig);
-  cloudConfig=next;localStorage.setItem(CLOUD_CFG_KEY,JSON.stringify(next));
-  if(changed){cloudPause();cloudSession=null;localStorage.removeItem(CLOUD_SESSION_KEY);cloudUsername=''}
-  if(!cloudValidConfig())return alert('Project URL과 Publishable key를 확인해 주세용. 비밀키는 입력하지 마세용.');
-  alert('연결 설정을 저장했어용!');cloudModal();
- };
  const area=$('cloudAccountSection');
  if(!connected){
   area.innerHTML=`<div class="field"><label>아이디 (영문 소문자·숫자·_ / 3~20자)</label><input id="cloudUsername" autocomplete="username"></div>
@@ -810,7 +801,7 @@ function cloudModal(){
   <div class="rowtools"><button id="cloudLogin">로그인</button><button class="secondary" id="cloudSignup">회원가입</button></div>
   <div class="rowtools" style="margin-top:10px"><button class="secondary" id="cloudRecover">🔑 복구 코드로 비밀번호 재설정</button></div>`;
   async function auth(action){
-   if(!cloudValidConfig())return alert('먼저 연결 설정을 저장해 주세용.');
+   if(!cloudValidConfig())return alert('클라우드 연결 설정을 확인해 주세용.');
    const username=$('cloudUsername').value.trim(),password=$('cloudPassword').value;
    if(!/^[a-z0-9_]{3,20}$/.test(username)||password.length<12)return alert('아이디 형식과 12자 이상 비밀번호를 확인해 주세용.');
    try{
