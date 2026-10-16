@@ -798,15 +798,18 @@ function cloudModal(){
  if(!connected){
   area.innerHTML=`<div class="field"><label>아이디 (영문 소문자·숫자·_ / 3~20자)</label><input id="cloudUsername" autocomplete="username"></div>
   <div class="field"><label>비밀번호 (12자 이상)</label><input id="cloudPassword" type="password" autocomplete="current-password"></div>
+  <div class="field"><label>길드 공용 초대코드 (회원가입할 때만)</label><input id="cloudInviteCode" type="password" autocomplete="off" placeholder="기존 계정 로그인은 비워두세용"></div>
   <div class="rowtools"><button id="cloudLogin">로그인</button><button class="secondary" id="cloudSignup">회원가입</button></div>
   <div class="rowtools" style="margin-top:10px"><button class="secondary" id="cloudRecover">🔑 복구 코드로 비밀번호 재설정</button></div>`;
   async function auth(action){
    if(!cloudValidConfig())return alert('클라우드 연결 설정을 확인해 주세용.');
    const username=$('cloudUsername').value.trim(),password=$('cloudPassword').value;
+   const invite_code=action==='signup' ? $('cloudInviteCode').value : undefined;
+   if(action==='signup' && !invite_code)return alert('길드 초대코드를 입력해 주세용.');
    if(!/^[a-z0-9_]{3,20}$/.test(username)||password.length<12)return alert('아이디 형식과 12자 이상 비밀번호를 확인해 주세용.');
    try{
     const data=await cloudRequest('/functions/v1/mobi-auth',{
-     method:'POST',body:JSON.stringify({action,username,password})
+     method:'POST',body:JSON.stringify({action,username,password,...(action==='signup'?{invite_code}:{})})
     });
     if(!data.session?.user?.id||!data.session.access_token)throw Error('세션이 응답에 없어요.');
     cloudPause();cloudSession={...data.session,expires_at:data.session.expires_at||Math.floor(Date.now()/1000)+(data.session.expires_in||3600)};
