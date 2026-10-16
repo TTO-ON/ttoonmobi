@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#172033"><title>뚠뚠한 모비일지</title><style>
+:root{--bg:#f4f6fb;--panel:#fff;--ink:#20283a;--muted:#778096;--line:#e5e9f2;--accent:#6577e8;--accent2:#e9ecff;--green:#16866a;--orange:#d78232;--shadow:0 8px 28px rgba(32,40,58,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 14px;font-weight:650;background:var(--accent);color:#fff}button.secondary{background:#eef0f7;color:var(--ink)}button.ghost{background:transparent;color:var(--muted);padding:7px 9px}button.danger{background:#fff0f0;color:#b43a43}
+header{background:#172033;color:white;padding:20px max(18px,calc((100vw - 1120px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-size:21px;font-weight:850;letter-spacing:-.5px}.brand span{color:#9da9ff}.subtitle{font-size:12px;color:#b8c1d5;margin-top:3px}
+main{max-width:1120px;margin:22px auto;padding:0 16px 40px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+h1{font-size:23px;margin:0 0 5px;letter-spacing:-.6px}p{margin:0;color:var(--muted);font-size:13px}.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.character-panel{margin-bottom:14px}.character-list{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.char{padding:8px;gap:8px;min-width:0}.char .avatar{width:30px;height:30px;border-radius:9px}.charstats{font-size:10px}.view-menu{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.view-menu button{background:#e9ecf5;color:#536078}.view-menu button.active{background:var(--accent);color:#fff}.view-panel[hidden]{display:none}.aggregate-tabs{margin:0 0 12px}.aggregate-panel{min-width:0}.aggregate-help{font-size:12px;color:var(--muted);margin:0 0 10px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:15px;margin:0 0 13px}.sidehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.character-list{display:grid;gap:8px}.matrix-wrap{overflow-x:auto;max-width:100%;border:1px solid var(--line);border-radius:12px;margin:0 0 12px}.matrix{border-collapse:separate;border-spacing:0;min-width:100%;width:max-content;font-size:11px}.matrix th,.matrix td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px;text-align:center;white-space:nowrap}.matrix th{background:#f8f9fd;position:sticky;top:0;z-index:1}.matrix th:first-child,.matrix td:first-child{position:sticky;left:0;text-align:left;background:#fff;z-index:2;min-width:92px}.matrix th:first-child{z-index:3;background:#f8f9fd}.matrix .matrix-cell{padding:0;background:#fff;color:var(--ink);border-radius:0;min-width:34px;width:34px;height:34px;font-size:15px}.matrix .matrix-cell.done{background:#e8f7f1;color:#16866a}.matrix .matrix-cell.todo{background:#fff1f1;color:#c34d56}.matrix-caption{font-size:11px;color:var(--muted);margin:-4px 0 10px;line-height:1.45}.char{display:flex;align-items:center;gap:10px;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);padding:11px;border-radius:13px;width:100%}.char.active{border-color:#8995f4;background:#f0f2ff}.avatar{width:36px;height:36px;border-radius:12px;background:#e9ecff;color:#5969d4;display:grid;place-items:center;font-weight:850;flex-shrink:0}.charinfo{flex:1;min-width:0}.charname{font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.charstats{font-size:11px;color:var(--muted);margin-top:3px}.tiny{font-size:11px;color:var(--muted)}
+.progressbar{height:7px;background:#edf0f6;border-radius:99px;overflow:hidden;margin-top:8px}.progressbar>div{height:100%;background:var(--green);border-radius:99px;transition:width .2s}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}.metric{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.metric .label{font-size:12px;color:var(--muted)}.metric strong{display:block;font-size:24px;margin-top:4px;letter-spacing:-.5px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}.tab{background:#eef0f7;color:#586176}.tab.active{background:var(--accent);color:#fff}.task-section{border:1px solid var(--line);border-radius:14px;margin-top:10px;overflow:hidden}.task-section.collapsed .task-row{display:none}.collapse-toggle{display:inline-grid;place-items:center;width:28px;height:28px;padding:0;flex:0 0 28px;border-radius:8px;background:#eef0f7;color:#586176;font-size:14px}.task-head{padding:12px 13px;background:#fafbfe;display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:750}.task-row{display:flex;align-items:center;gap:10px;padding:12px 13px;border-top:1px solid var(--line)}.drag-handle{display:inline-grid;place-items:center;flex:0 0 28px;width:28px;height:28px;padding:0;border-radius:8px;background:#eef0f7;color:#6b7488;font-size:17px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}.drag-handle:active{cursor:grabbing}.task-section.dragging,.task-row.dragging{opacity:.45}.task-section.drop-target,.task-row.drop-target{outline:2px dashed var(--accent);outline-offset:-2px}.drag-hint{font-size:11px;color:var(--muted);margin:0 0 8px}.task-row input[type=checkbox]{width:19px;height:19px;accent-color:var(--green);flex-shrink:0}.task-label{flex:1;min-width:0}.task-label.done{text-decoration:line-through;color:#9aa2b2}.task-name{font-weight:650}.task-meta{font-size:11px;color:var(--muted);margin-top:3px}.qty{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}.qty input{width:52px;padding:5px;border:1px solid var(--line);border-radius:8px;text-align:center}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.formrow{display:flex;gap:8px;flex-wrap:wrap}.formrow input,.formrow select,.field input,.field select{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;color:var(--ink);min-width:0}.formrow input{flex:1;min-width:120px}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;font-weight:700;color:#626d82}.field input,.field select{width:100%}.empty{padding:25px 10px;text-align:center;color:var(--muted);font-size:13px}.notice{border:1px solid #f1dfb6;background:#fff9e9;color:#80602b;border-radius:12px;padding:11px 13px;font-size:12px;line-height:1.5;margin-bottom:14px}.mutedbtn{background:#eef0f7;color:#5e687b}
+.modal-backdrop{position:fixed;inset:0;background:#11182788;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal-backdrop.show{display:flex}.modal{position:relative;background:#fff;border-radius:18px;padding:20px;width:min(460px,100%);max-height:90vh;overflow:auto}.modal-close-x{position:absolute;right:10px;top:10px;width:36px;height:36px;padding:0;border-radius:10px;background:#eef0f7;color:#20283a;font-size:24px;line-height:1;z-index:5}.modal h2{margin:0 0 8px;font-size:18px}.modal p{line-height:1.5}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+footer{text-align:center;color:#929aab;font-size:11px;padding:18px}
+@media(max-width:900px){.character-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){header{padding:17px 16px}main{margin:16px auto;padding:0 12px 30px}.summary{gap:7px}.metric{padding:10px}.metric strong{font-size:21px}.panel{padding:14px}.character-list{grid-template-columns:repeat(3,minmax(0,1fr))}.char{padding:8px;gap:6px}.char .avatar{width:27px;height:27px}.charstats{font-size:9px}.task-row{padding:11px 10px}.qty input{width:44px}}
+@media(max-width:390px){.character-list{grid-template-columns:repeat(2,minmax(0,1fr))}.summary{grid-template-columns:repeat(3,minmax(0,1fr))}.metric .label{font-size:10px}.metric strong{font-size:19px}}
+
+
+:root{--font-scale:1}body{font-size:calc(14px * var(--font-scale))}button,input,select,textarea{font-size:inherit}button:disabled{opacity:.45;cursor:not-allowed}
+header{max-width:none}.header-tools{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.status{font-size:12px;color:#d7f5e9}.status.bad{color:#ffd0d0}
+.container{max-width:1200px;margin:20px auto;padding:0 16px 45px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.view-menu{margin:14px 0}.view-menu button{padding:10px 16px}.rowtools{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.compact .task-row{padding:7px 10px}.compact .panel{padding:12px}.compact .char{padding:7px}.compact .matrix th,.compact .matrix td{padding:4px}
+.character-panel{margin-bottom:12px}.character-list{grid-template-columns:repeat(4,minmax(0,1fr))}.char{position:relative}.char .star{font-size:17px;padding:3px 5px;background:transparent;color:#a4acbb}.char .star.on{color:#e2a32b}.char .move{padding:3px 5px;background:transparent;color:#929bac}.char .select-char{flex:1;min-width:0;background:transparent;color:inherit;text-align:left;padding:0;display:flex;align-items:center;gap:7px}
+.panel h2{margin-bottom:7px}.task-row{gap:10px}.task-row .task-label{flex:1}.task-row.hidden-task{opacity:.55}.task-section{margin-top:8px}.task-head{padding:10px 12px}.task-row input[type=checkbox]{cursor:pointer}.counter{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.counter button{min-width:36px;padding:7px 10px}.counter strong{min-width:55px;text-align:center;font-size:15px}.counter-detail{font-size:11px;color:var(--muted)}
+.matrix-wrap{max-height:65vh;overflow:auto}.matrix th{top:0}.matrix th:first-child{min-width:120px}.matrix .matrix-cell{min-width:39px;width:auto;padding:4px 7px;height:35px}.matrix .matrix-cell.counter-cell{font-size:12px;min-width:64px}.matrix .matrix-cell.partial{background:#fff4dd;color:#946012}.matrix .matrix-cell.done{background:#e8f7f1}.matrix .matrix-cell.todo{background:#fff1f1}.matrix th small{display:block;font-size:10px;color:#7c8799;font-weight:400}
+.notes-grid{display:grid;grid-template-columns:240px 1fr;gap:14px}.note-list{display:grid;gap:7px;align-content:start}.note-item{width:100%;text-align:left;background:#f2f4fa;color:#34405a}.note-item.active{background:#e9ecff;color:#4255c4}.note-editor input,.note-editor textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--ink);background:white}.note-editor textarea{min-height:280px;resize:vertical;line-height:1.65}.note-editor label{display:block;margin:12px 0 5px;font-weight:700;font-size:12px}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.settings-grid label{font-size:12px;color:var(--muted)}.settings-grid select,.settings-grid input{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;background:white}.modal{width:min(540px,100%)}.edit-row{display:flex;gap:7px;align-items:center;margin:7px 0}.edit-row input{flex:1;min-width:0;padding:8px;border:1px solid var(--line);border-radius:8px}.edit-row button{padding:8px 10px}.helper{font-size:12px;color:var(--muted);line-height:1.6}.chip{background:#eef0f7;color:#586176;padding:7px 9px;border-radius:9px}.filter-active{background:#dcece7!important;color:#15775e!important}
+@media(max-width:900px){.character-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.character-list{grid-template-columns:repeat(2,minmax(0,1fr))}.notes-grid{grid-template-columns:1fr}.note-editor textarea{min-height:230px}.settings-grid{grid-template-columns:1fr}.counter{justify-content:flex-end}.matrix th:first-child{min-width:90px}}
+
+.character-panel .sidehead{margin-bottom:0}.character-panel .character-content{margin-top:12px}.character-panel.folded .character-content{display:none}.character-panel .char-fold-btn{white-space:nowrap}.reminder-backdrop{position:fixed;inset:0;background:#11182799;z-index:30;display:none;align-items:center;justify-content:center;padding:16px}.reminder-backdrop.show{display:flex}.reminder-dialog{background:var(--panel);color:var(--ink);width:min(440px,100%);max-height:85vh;overflow:auto;border-radius:18px;padding:22px;box-shadow:0 18px 55px #0003}.reminder-dialog h2{margin:0 0 10px}.reminder-dialog ul{margin:12px 0;padding-left:22px;line-height:1.8}.reminder-dialog .modal-actions{margin-top:18px}
+
+.chat-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}.chat-log{height:350px;overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fafbff;padding:14px;display:flex;flex-direction:column;gap:10px}.chat-bubble{max-width:92%;padding:11px 13px;border-radius:13px;white-space:pre-wrap;line-height:1.65;font-size:13px}.chat-bubble.user{align-self:flex-end;background:#e9ecff;color:#28346c}.chat-bubble.bot{align-self:flex-start;background:#fff;border:1px solid var(--line)}.chat-compose{display:flex;gap:8px}.chat-compose textarea{flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical;min-height:55px;font:inherit}.chat-preview{border:1px solid #d8dff8;background:#f5f7ff;border-radius:12px;padding:13px;line-height:1.8}.chat-preview ul{margin:8px 0;padding-left:22px}.chat-hints{display:flex;flex-wrap:wrap;gap:7px}.chat-hints button{font-size:12px}.chat-alert{color:#a04435;font-size:12px}.chat-preview[hidden]{display:none!important}@media(max-width:600px){.chat-log{height:300px}.chat-compose{flex-wrap:wrap}.chat-compose textarea{flex-basis:100%}}
+.guide-items{display:grid;gap:11px;margin:10px 0}.guide-items p{font-size:13px;line-height:1.65;color:var(--ink);padding:10px 12px;border-radius:10px;background:#f5f7fc}.guide-items strong{color:#384bb3}.modal-close-x[hidden]{display:none!important}
+
+/* Soft, accessible three-theme palette; blue is the default. */
+:root,[data-mobi-theme="blue"]{--bg:#f6faff;--panel:#ffffff;--ink:#344255;--muted:#718096;--line:#e1eaf6;--accent:#789cce;--accent2:#eaf3ff;--green:#16866a;--orange:#b98437;--shadow:0 8px 28px rgba(52,66,85,.055);--header-bg:#eaf3ff;--header-ink:#344255;--header-muted:#617b9e;--header-status:#286c57;--nav-bg:#eaf3ff;--nav-ink:#526f98;--active-bg:#edf4ff;--avatar-bg:#eaf3ff;--avatar-ink:#547bad;--chat-user-bg:#eaf3ff}
+[data-mobi-theme="pink"]{--bg:#fff8fa;--panel:#ffffff;--ink:#443b44;--muted:#887781;--line:#f2e3e9;--accent:#c87e9c;--accent2:#fcecf2;--green:#16866a;--orange:#b98437;--shadow:0 8px 28px rgba(95,58,78,.055);--header-bg:#fcecf2;--header-ink:#443b44;--header-muted:#956d82;--header-status:#286c57;--nav-bg:#fcecf2;--nav-ink:#9d6480;--active-bg:#fff0f5;--avatar-bg:#fcecf2;--avatar-ink:#ad6686;--chat-user-bg:#fcecf2}
+[data-mobi-theme="yellow"]{--bg:#fffdf5;--panel:#ffffff;--ink:#454033;--muted:#847c69;--line:#f1ead5;--accent:#b69448;--accent2:#fff5d9;--green:#16866a;--orange:#b98437;--shadow:0 8px 28px rgba(93,79,39,.055);--header-bg:#fff5d9;--header-ink:#454033;--header-muted:#89764b;--header-status:#286c57;--nav-bg:#fff5d9;--nav-ink:#8b7239;--active-bg:#fff9e6;--avatar-bg:#fff5d9;--avatar-ink:#987d3e;--chat-user-bg:#fff5d9}
+header{background:var(--header-bg);color:var(--header-ink);border-bottom:1px solid var(--line)}.brand span{color:var(--accent)}.subtitle{color:var(--header-muted)}.status{color:var(--header-status)}.status.bad{color:#b43a43}
+.view-menu button{background:var(--nav-bg);color:var(--nav-ink)}.view-menu button.active,.tab.active{background:var(--accent);color:#fff}.tab{background:var(--accent2);color:var(--nav-ink)}.char.active{background:var(--active-bg);border-color:var(--accent)}.avatar{background:var(--avatar-bg);color:var(--avatar-ink)}.chat-bubble.user{background:var(--chat-user-bg);color:var(--ink)}.note-item.active{background:var(--accent2);color:var(--nav-ink)}.chip,.collapse-toggle{background:var(--accent2);color:var(--nav-ink)}
+.theme-picker{display:inline-flex;align-items:center;gap:7px;background:#ffffffa8;border:1px solid var(--line);border-radius:11px;padding:5px 9px;color:var(--header-ink);font-size:12px;font-weight:700}.theme-picker select{max-width:130px;background:#fff;border:1px solid var(--line);border-radius:7px;color:var(--ink);padding:5px 7px;cursor:pointer;font-size:12px}.theme-picker select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style></head>
+<body><header><div><div class="brand">뚠뚠한 <span>모비일지</span></div><div class="subtitle">마비노기 모바일 · 서버 없는 로컬 숙제 관리</div></div><div class="header-tools"><label class="theme-picker" for="mobiThemeSelect">🎨 테마 <select id="mobiThemeSelect" aria-label="화면 색상 테마"><option value="blue">💙 블루+화이트</option><option value="pink">💗 핑크+화이트</option><option value="yellow">💛 옐로+화이트</option></select></label><span id="saveStatus" class="status" role="status">저장 확인 중</span><button class="secondary" id="undoBtn">↶ 되돌리기</button><button class="secondary" id="exportBtn">JSON 백업</button><button class="secondary" id="importBtn">백업 불러오기</button><button class="secondary" id="settingsBtn">설정</button></div></header>
+<main class="container"><div class="toolbar"><div><h1>숙제 현황</h1><p id="todayText"></p></div><div class="rowtools"><button id="addCharBtn">＋ 캐릭터 추가</button></div></div>
+<div class="notice">일일: 매일 오전 6시 · 주간: 월요일 오전 6시 초기화. 구멍은 주간 7회부터 사용하고 일일 1회가 매일 누적됩니다. 월요일 오전 6시에는 누적분까지 초기화됩니다. 데이터는 이 브라우저에만 저장됩니다.</div>
+<section class="panel character-panel" id="characterPanel"><div class="sidehead"><div><h2>내 캐릭터 <span id="charCount" class="tiny"></span></h2><p>★ 본캐 지정 · ↑↓ 순서 변경 · 이름을 눌러 선택</p></div><button type="button" class="secondary char-fold-btn" id="charFoldBtn" aria-controls="characterContent" aria-expanded="true">▾ 접기</button></div><div class="character-content" id="characterContent"><div class="character-list" id="characterList"></div><div class="formrow" style="margin-top:12px"><input id="newCharName" placeholder="캐릭터 이름"><button id="quickAddBtn">＋ 추가</button></div></div></section>
+<nav class="view-menu" aria-label="메뉴"><button data-view="aggregate" class="active">전체 집계</button><button data-view="tasks">숙제 관리</button><button data-view="memo">메모</button><button data-view="chat">🤖 뚠비서</button></nav>
+<section id="aggregateView" class="view-panel"><div class="panel"><div class="toolbar"><div><h2>전체 캐릭터 숙제 집계</h2><p>행은 캐릭터, 열은 숙제입니다. 체크 항목은 칸을 눌러 바로 변경할 수 있어요.</p></div><div class="rowtools"><button class="secondary" id="matrixFilter">미완료만 보기: 꺼짐</button></div></div><div class="tabs" id="aggregateTabs"><button class="tab active" data-period="daily">일일</button><button class="tab" data-period="weekly">주간</button></div><div class="helper" style="margin-bottom:10px">✓ 완료 · ✕ 미완료 · 숫자는 사용 횟수/현재 사용 가능 횟수 (결계·구멍). 표는 좌우로 스크롤할 수 있습니다.</div><div id="matrixWrap" class="matrix-wrap"></div></div></section>
+<section id="tasksView" class="view-panel" hidden><div class="summary"><div class="metric"><div class="label">완료 항목</div><strong id="doneCount">0</strong></div><div class="metric"><div class="label">남은 항목</div><strong id="leftCount">0</strong></div><div class="metric"><div class="label">진행률</div><strong id="progressText">0%</strong><div class="progressbar"><div id="progressBar"></div></div></div></div><div class="panel"><div class="toolbar"><div><h2 id="activeTitle">캐릭터 선택</h2><p id="activeSubtitle"></p></div><div class="rowtools"><button class="secondary" id="taskFilter">미완료만 보기: 꺼짐</button><button class="secondary" id="renameBtn">캐릭터 관리</button></div></div><div class="tabs" id="taskTabs"><button class="tab active" data-period="daily">일일</button><button class="tab" data-period="weekly">주간</button></div><div id="taskList"></div><div class="rowtools" style="margin-top:14px"><button class="secondary" id="addTaskBtn">＋ 숙제 추가</button><button class="secondary" id="editTaskBtn">숙제 편집·숨기기·순서</button><button class="danger" id="resetChecksBtn">현재 주기 기록 초기화</button></div></div></section>
+<section id="memoView" class="view-panel" hidden><div class="panel"><div class="toolbar"><div><h2>내 메모</h2><p>제목과 내용을 자유롭게 기록하세요. 입력 내용은 자동 저장되고 JSON 백업에도 포함됩니다.</p></div><button id="newNoteBtn">＋ 새 메모</button></div><div class="notes-grid"><div id="noteList" class="note-list"></div><div id="noteEditor" class="note-editor"></div></div></div></section>
+<section id="chatView" class="view-panel" hidden><div class="panel chat-layout"><div><div class="rowtools" style="justify-content:space-between"><h2>🤖 뚠비서</h2><button type="button" class="secondary" id="chatHelpBtn">❔ 도움말 · 명령어</button></div><p>말하듯 숙제를 기록해 보세요. 변경 전 반드시 확인을 받아요. 인터넷·API 없이 이 기기에서만 작동합니다.</p></div><div id="chatLog" class="chat-log" role="log" aria-live="polite"><div class="chat-bubble bot">뚠비서 대기 중임당! 🤖
+“뚠 결계 3번 했어”, “오늘 무료뽑기 안 한 캐릭터 알려줘”처럼 편하게 말씀해주세용!
+기록은 확인하신 다음에 적용해드릴게용.</div></div><div id="chatPreview" class="chat-preview" hidden></div><div class="chat-hints"><button class="secondary" data-chat-example="결계 남은 캐릭터 알려줘">결계 남은 캐릭터</button><button class="secondary" data-chat-example="오늘 무료뽑기 안 한 캐릭터 누구야?">무료뽑기 미완료</button><button class="secondary" data-chat-example="선택한 캐릭터 일일숙제 다 했어">선택 캐릭터 일일 완료</button><button class="secondary" id="magicStartBtn">🧮 마도저항 계산</button></div><div class="chat-hints" id="chatFavorites"><button class="secondary" data-chat-example="오늘 남은 숙제 알려줘">오늘 남은 숙제</button><button class="secondary" data-chat-example="주간 남은 숙제 알려줘">주간 미완료</button><button class="secondary" data-chat-example="카브락 남은 캐릭터 알려줘">카브락 미완료</button><button class="secondary" id="chatPin">☆ 현재 입력 즐겨찾기</button></div><div class="chat-hints" id="chatRecent"></div><div class="chat-compose"><textarea id="chatInput" rows="2" placeholder="예: 뚠 결계 2번 했고 부캐1 무료뽑기 끝냈어 (Enter 전송, Shift+Enter 줄바꿈)"></textarea><button id="chatSend">보내기 ↗</button></div><p class="helper">지원 표현을 규칙으로 이해하는 무료 로컬 비서입니다. 모호한 명령은 임의로 적용하지 않으며, 대화 내용은 별도 서버로 전송되지 않습니다.</p></div></section>
+</main><footer>뚠뚠한 모비일지 · 무료 · 계정/서버/클라우드 없음 · 같은 브라우저에서 파일을 열어 주세요</footer>
+<div class="reminder-backdrop" id="barrierReminder" role="presentation"><div class="reminder-dialog" role="alertdialog" aria-modal="true" aria-labelledby="barrierReminderTitle"><h2 id="barrierReminderTitle">🔔 결계 알림</h2><p id="barrierReminderTime"></p><p>아직 결계 횟수가 남은 캐릭터가 있어요.</p><ul id="barrierReminderList"></ul><div class="modal-actions"><button type="button" id="barrierReminderClose">확인</button></div></div></div>
+<div class="modal-backdrop" id="modalBackdrop"><div class="modal" role="dialog" aria-modal="true" aria-label="설정 창"><button class="modal-close-x" id="modalCloseX" aria-label="닫기">×</button><div id="modalContent"></div></div></div><input type="file" id="importFile" accept=".json,application/json" hidden>
+<script>
+'use strict';
+const STORE='mobiHomeworkV1';
+const $=id=>document.getElementById(id), clone=x=>JSON.parse(JSON.stringify(x));
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const baseTasks={daily:[['free-draw','무료뽑기'],['weekday-dungeon','요일던전'],['coin','동전'],['tribute','공물'],['part-time','아르바이트']].map(([id,name])=>({id,name,kind:'check'})),weekly:[['guild-request','길드의뢰'],['membership-part-time','멤버십알바'],['field-boss','필드보스'],['vanguard','뱅가드'],['abyss','어비스'],['kavrak','카브락'],['airel','에이렐'],['succubus','서큐'],['weekend-abyss','주말어비스'],['weekend-raid','주말레이드']].map(([id,name])=>({id,name,kind:'check'})).concat([{id:'barrier',name:'결계',kind:'counter'},{id:'hole',name:'심층구멍',kind:'counter'},{id:'trade',name:'물물교환',kind:'group',checkboxItems:true,children:[['pumpkin-soup','호박수프',8],['garden-salad','가든샐러드',4],['paprika-stew','파프리카스튜',4],['spicy-perch','농어매운탕',1],['stir-fried-vegetables','야채볶음',2]].map(([id,name,target])=>({id,name,target}))}]),monthly:[]};
+baseTasks.weekly.sort((a,b)=>{const ids=['barrier','hole','guild-request','membership-part-time','field-boss','vanguard','abyss','kavrak','airel','succubus','trade','weekend-abyss','weekend-raid'];return ids.indexOf(a.id)-ids.indexOf(b.id)});
+const fresh=()=>({version:2,charAliases:{},taskAliases:{},characters:[],selected:null,period:'daily',tasks:clone(baseTasks),records:{},notes:[],noteSelected:null,tradeByChar:{},ui:{view:'aggregate',incomplete:false,matrixIncomplete:false,density:'normal',fontSize:14,charactersCollapsed:false,barrierReminderEnabled:false,theme:'blue'},settings:{dailyHour:'06:00',weeklyDay:'1',weeklyHour:'06:00',monthlyDay:'1',monthlyHour:'06:00'},createdAt:new Date().toISOString()});
+function migrate(input){if(!input||![1,2].includes(Number(input.version))||!Array.isArray(input.characters)||!input.tasks||typeof input.records!=='object'||!input.records)throw Error('지원하지 않는 백업 형식');const s={...fresh(),...clone(input)};s.version=2;s.ui={...fresh().ui,...(input.ui||{})};if(!['blue','pink','yellow'].includes(s.ui.theme))s.ui.theme='blue';s.settings={...fresh().settings,...(input.settings||{})};s.characters=s.characters.slice(0,12).map(c=>({...c,favorite:!!c.favorite}));s.notes=Array.isArray(s.notes)?s.notes:[];s.charAliases=s.charAliases||{};s.taskAliases=s.taskAliases||{};s.tradeByChar=(s.tradeByChar&&typeof s.tradeByChar==='object')?s.tradeByChar:{};s.records=s.records||{};s.tasks=s.tasks||clone(baseTasks);for(const p of ['daily','weekly','monthly']){if(!Array.isArray(s.tasks[p]))s.tasks[p]=clone(baseTasks[p]);for(const def of baseTasks[p])if(!s.tasks[p].some(t=>t.id===def.id))s.tasks[p].push(clone(def));}
+for(const id of ['barrier','hole']){const idx=s.tasks.weekly.findIndex(t=>t.id===id);const old=s.tasks.weekly[idx];s.tasks.weekly[idx]={id,name:(id==='hole'&&old?.name==='구멍')?'심층구멍':(old?.name||baseTasks.weekly.find(t=>t.id===id).name),kind:'counter',hidden:!!old?.hidden};for(const rec of Object.values(s.records)){if(!rec||typeof rec!=='object')continue;const oldCount=Array.from({length:id==='hole'?14:7},(_,i)=>!!rec[`${id}-${i+1}`]).filter(Boolean).length;const count=typeof rec[id]==='number'?rec[id]:(rec[id]===true?(id==='hole'?14:7):oldCount);rec[id]=Math.max(0,Math.min(id==='hole'?14:7,Number(count)||0));for(let i=1;i<=(id==='hole'?14:7);i++)delete rec[`${id}-${i}`];}}
+const trade=s.tasks.weekly.find(t=>t.id==='trade');if(trade){trade.kind='group';trade.checkboxItems=true;trade.children=Array.isArray(trade.children)?trade.children:clone(baseTasks.weekly.find(t=>t.id==='trade').children);for(const rec of Object.values(s.records))for(const ch of trade.children)if(typeof rec[ch.id]==='number')rec[ch.id]=rec[ch.id]>=Number(ch.target||1);}
+// 기존 파일의 기본 순서를 쓰던 경우에만 새 기본 순서로 교체합니다. 사용자가 직접 편집한 순서는 유지합니다.
+const oldDaily=['weekday-dungeon','coin','tribute','free-draw','part-time'];
+const oldWeekly=['guild-request','field-boss','vanguard','membership-part-time','abyss','kavrak','airel','succubus','weekend-abyss','weekend-raid','barrier','hole','trade'];
+for(const [period,oldOrder] of [['daily',oldDaily],['weekly',oldWeekly]]){
+ const current=s.tasks[period].map(t=>t.id);
+ if(current.length===oldOrder.length&&current.every((id,i)=>id===oldOrder[i])){
+  const desired=baseTasks[period].map(t=>t.id);
+  if(period==='weekly')desired.splice(0,desired.length,'barrier','hole','guild-request','membership-part-time','field-boss','vanguard','abyss','kavrak','airel','succubus','trade','weekend-abyss','weekend-raid');
+  const map=new Map(s.tasks[period].map(t=>[t.id,t]));s.tasks[period]=desired.map(id=>map.get(id)).filter(Boolean);
+ }
+}
+if(!s.characters.some(c=>c.id===s.selected))s.selected=s.characters[0]?.id||null;if(!['daily','weekly'].includes(s.period))s.period='daily';if(!['aggregate','tasks','memo','chat'].includes(s.ui.view))s.ui.view='aggregate';return s;}
+let state;let initialError='';try{const raw=localStorage.getItem(STORE);state=raw?migrate(JSON.parse(raw)):fresh()}catch(e){state=fresh();initialError='기존 데이터를 읽지 못했습니다. 기존 저장 내용은 덮어쓰지 않았습니다. 먼저 JSON 백업을 확인해 주세요.'}
+let history=[],lastSaved='',saveBlocked=!!initialError;
+function snapshot(){history.push(clone(state));if(history.length>35)history.shift()}
+function persist(renderNow=true){if(saveBlocked){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');if(renderNow)render();return;}try{localStorage.setItem(STORE,JSON.stringify(state));lastSaved=new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});$('saveStatus').textContent='✓ 자동 저장 '+lastSaved;$('saveStatus').classList.remove('bad')}catch(e){$('saveStatus').textContent='⚠ 저장 실패 · 백업 권장';$('saveStatus').classList.add('bad');alert('브라우저 저장에 실패했습니다. JSON 백업을 내려받아 주세요.')}if(renderNow)render()}
+function mutate(fn){snapshot();fn();persist()}
+function pad(n){return String(n).padStart(2,'0')}
+function dailyAnchor(now=new Date()){const d=new Date(now);const [h,m]=(state.settings.dailyHour||'06:00').split(':').map(Number);d.setHours(h,m,0,0);if(now<d)d.setDate(d.getDate()-1);return d}
+function weeklyAnchor(now=new Date()){const d=new Date(now);const day=Number(state.settings.weeklyDay??1);const [h,m]=(state.settings.weeklyHour||'06:00').split(':').map(Number);d.setHours(h,m,0,0);d.setDate(d.getDate()-((d.getDay()-day+7)%7));if(d>now)d.setDate(d.getDate()-7);return d}
+function keyDate(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function periodKey(period,now=new Date()){return keyDate(period==='daily'?dailyAnchor(now):weeklyAnchor(now))}
+function recordKey(id,period){return `${id}|${period}|${periodKey(period)}`}
+function record(id,period){return state.records[recordKey(id,period)]||{}}
+function editableRecord(id,period){const key=recordKey(id,period);return state.records[key]||(state.records[key]={})}
+function availableHole(now=new Date()){const start=weeklyAnchor(now);const day=dailyAnchor(now);const startDate=new Date(start.getFullYear(),start.getMonth(),start.getDate());const dayDate=new Date(day.getFullYear(),day.getMonth(),day.getDate());const days=Math.max(0,Math.min(6,Math.round((Date.UTC(dayDate.getFullYear(),dayDate.getMonth(),dayDate.getDate())-Date.UTC(startDate.getFullYear(),startDate.getMonth(),startDate.getDate()))/86400000)));return 8+days}
+function maxCount(id){return id==='barrier'?7:availableHole()}
+function tradeItems(charId){const custom=state.tradeByChar?.[charId];return Array.isArray(custom)?custom:(state.tasks.weekly.find(t=>t.id==='trade')?.children||[])}
+function charLeaves(charId,period){const arr=[];for(const t of state.tasks[period]||[]){if(t.hidden)continue;if(t.id==='trade'){for(const ch of tradeItems(charId))if(!ch.hidden)arr.push({...ch,kind:'check',parent:t.name});}else if(t.kind==='group'){for(const ch of t.children||[])if(!ch.hidden)arr.push({...ch,kind:'check',parent:t.name});}else arr.push(t)}return arr}
+function isDone(rec,t){if(t.kind==='counter')return Number(rec[t.id]||0)>=maxCount(t.id);if(t.kind==='group')return (t.children||[]).every(ch=>!!rec[ch.id]);return !!rec[t.id]}
+function leafTasks(period){const arr=[];for(const t of state.tasks[period]||[]){if(t.hidden)continue;if(t.kind==='group')for(const ch of t.children||[])if(!ch.hidden)arr.push({...ch,kind:'check',parent:t.name});else{}else arr.push(t);}return arr}
+function leaves(period){const arr=[];for(const t of state.tasks[period]||[]){if(t.hidden)continue;if(t.kind==='group'){for(const ch of t.children||[])if(!ch.hidden)arr.push({...ch,kind:'check',parent:t.name})}else arr.push(t)}return arr}
+function stats(id,period){const rec=record(id,period),ts=charLeaves(id,period);const done=ts.filter(t=>isDone(rec,t)).length;return {done,total:ts.length}}
+function charStats(id){const a=stats(id,'daily'),b=stats(id,'weekly');return {done:a.done+b.done,total:a.total+b.total}}
+function selectedChar(){return state.characters.find(c=>c.id===state.selected)}
+function sortedChars(){return [...state.characters].sort((a,b)=>Number(!!b.favorite)-Number(!!a.favorite))}
+function renderCharacterFold(){const folded=!!state.ui.charactersCollapsed;const panel=$('characterPanel');panel.classList.toggle('folded',folded);$('charFoldBtn').textContent=folded?'▸ 펼치기':'▾ 접기';$('charFoldBtn').setAttribute('aria-expanded',String(!folded));}
+$('charFoldBtn').onclick=()=>mutate(()=>{state.ui.charactersCollapsed=!state.ui.charactersCollapsed});
+function renderChars(){const box=$('characterList');box.innerHTML='';$('charCount').textContent=`${state.characters.length}/12명`;for(const c of sortedChars()){const st=charStats(c.id),el=document.createElement('div');el.className='char'+(c.id===state.selected?' active':'');el.innerHTML=`<button class="star ${c.favorite?'on':''}" title="본캐 지정" aria-label="${esc(c.name)} 본캐 지정">${c.favorite?'★':'☆'}</button><button class="select-char"><span class="avatar">${esc(c.name.slice(0,1))}</span><span class="charinfo"><span class="charname">${esc(c.name)}</span><span class="charstats" style="display:block">${st.done}/${st.total} 완료</span></span></button><button class="move up" title="위로">↑</button><button class="move down" title="아래로">↓</button>`;el.querySelector('.star').onclick=()=>mutate(()=>{for(const x of state.characters)x.favorite=x.id===c.id?!c.favorite:false});el.querySelector('.select-char').onclick=()=>mutate(()=>{state.selected=c.id;state.ui.view='tasks'});el.querySelector('.up').onclick=()=>moveChar(c.id,-1);el.querySelector('.down').onclick=()=>moveChar(c.id,1);box.appendChild(el)}if(!state.characters.length)box.innerHTML='<div class="empty">캐릭터를 추가해 주세요.</div>';}
+function moveChar(id,delta){const group=sortedChars().filter(c=>!!c.favorite===!!state.characters.find(x=>x.id===id).favorite),i=group.findIndex(c=>c.id===id),j=i+delta;if(j<0||j>=group.length)return;mutate(()=>{const a=state.characters.indexOf(group[i]),b=state.characters.indexOf(group[j]);[state.characters[a],state.characters[b]]=[state.characters[b],state.characters[a]]})}
+function changeCheck(charId,period,id,value){mutate(()=>{editableRecord(charId,period)[id]=value})}
+function changeCounter(charId,id,delta){const r=record(charId,'weekly'),max=maxCount(id),next=Math.max(0,Math.min(max,Number(r[id]||0)+delta));if(next===Number(r[id]||0))return;changeCheck(charId,'weekly',id,next)}
+function renderMatrix(){const wrap=$('matrixWrap'),period=state.period,chars=sortedChars(),all=leaves(period),ts=state.ui.matrixIncomplete?all.filter(t=>chars.some(c=>!isDone(record(c.id,period),t))):all;if(!chars.length||!ts.length){wrap.innerHTML=`<div class="empty">${!chars.length?'캐릭터를 추가하면 집계가 표시됩니다.':'표시할 숙제가 없습니다.'}</div>`;return}const table=document.createElement('table');table.className='matrix';table.innerHTML='<thead><tr><th>캐릭터</th>'+ts.map(t=>`<th>${esc(t.parent?`${t.parent} · `:'')}${esc(t.name)}</th>`).join('')+'</tr></thead>';const body=document.createElement('tbody');for(const c of chars){const tr=document.createElement('tr');tr.innerHTML=`<td><strong>${esc(c.name)}</strong></td>`;const rec=record(c.id,period);for(const t of ts){const td=document.createElement('td'),b=document.createElement('button'),available=charLeaves(c.id,period).some(x=>x.id===t.id),done=isDone(rec,t);if(!available){td.textContent='—';tr.appendChild(td);continue;}b.className='matrix-cell '+(done?'done':'todo');if(t.kind==='counter'){const v=Number(rec[t.id]||0),max=maxCount(t.id);b.textContent=`${v}/${max}`;b.classList.add('counter-cell');if(v>0&&!done)b.classList.add('partial');b.title='숙제 관리에서 + / − 로 횟수를 조절하세요';b.onclick=()=>mutate(()=>{state.selected=c.id;state.ui.view='tasks'})}else{b.textContent=done?'✓':'✕';b.title=`${c.name} · ${t.name} · ${done?'완료':'미완료'}`;b.onclick=()=>changeCheck(c.id,period,t.id,!done)}td.appendChild(b);tr.appendChild(td)}body.appendChild(tr)}table.appendChild(body);wrap.replaceChildren(table)}
+function renderTasks(){const c=selectedChar(),box=$('taskList');box.innerHTML='';if(!c){$('activeTitle').textContent='캐릭터를 선택해 주세요';$('activeSubtitle').textContent='';box.innerHTML='<div class="empty">캐릭터를 추가해 주세요.</div>';return}$('activeTitle').textContent=c.name;$('activeSubtitle').textContent=`${state.period==='daily'?'일일':'주간'} 숙제 · ${periodKey(state.period)} 시작`;const rec=record(c.id,state.period);let visible=0;for(const t of state.tasks[state.period]){if(t.hidden)continue;const children=t.kind==='group'?(t.id==='trade'?tradeItems(c.id):(t.children||[])).filter(ch=>!ch.hidden):[t];const showing=state.ui.incomplete?children.filter(ch=>!isDone(rec,ch)):children;if(!showing.length)continue;visible++;const section=document.createElement('div');section.className='task-section';const header=document.createElement('div');header.className='task-head';header.innerHTML=`<span style="flex:1">${esc(t.name)}</span><span class="tiny">${children.filter(ch=>isDone(rec,ch)).length}/${children.length}</span>`;
+if(t.kind==='group'){
+ const fold=document.createElement('button');fold.type='button';fold.className='collapse-toggle';const key='mobiFold_'+t.id;const folded=()=>{try{const raw=localStorage.getItem(key);return raw===null?t.id==='trade':raw==='1'}catch(e){return t.id==='trade'}};
+ const setFold=()=>{section.classList.toggle('collapsed',folded());fold.textContent=folded()?'▸':'▾';fold.setAttribute('aria-expanded',String(!folded()))};
+ fold.onclick=()=>{try{localStorage.setItem(key,folded()?'0':'1')}catch(e){}setFold()};header.appendChild(fold);setFold();
+ if(t.id==='trade'){const edit=document.createElement('button');edit.type='button';edit.className='secondary trade-edit';edit.textContent='품목·수량 편집';edit.onclick=()=>editTrade(c.id);header.insertBefore(edit,fold)}
+}
+section.appendChild(header);if(t.kind==='counter'){const row=document.createElement('div');row.className='task-row';const value=Math.max(0,Number(rec[t.id]||0)),max=maxCount(t.id);row.innerHTML=`<div class="task-label"><div class="task-name">${esc(t.name)} 사용 횟수</div><div class="task-meta">${t.id==='barrier'?'매주 월요일 06:00에 7회 초기화':`주간 7회 먼저 사용 · 일일 누적 ${max-7}회 · 월요일 06:00 전체 초기화`}</div></div><div class="counter"><button class="secondary minus" aria-label="${esc(t.name)} 1회 취소">−</button><strong>${value} / ${max}</strong><button class="secondary plus" aria-label="${esc(t.name)} 1회 완료">＋</button></div>`;row.querySelector('.minus').disabled=value<=0;row.querySelector('.plus').disabled=value>=max;row.querySelector('.minus').onclick=()=>changeCounter(c.id,t.id,-1);row.querySelector('.plus').onclick=()=>changeCounter(c.id,t.id,1);section.appendChild(row)}else for(const ch of showing){const row=document.createElement('label');row.className='task-row';row.innerHTML=`<input type="checkbox" ${rec[ch.id]?'checked':''}><span class="task-label ${rec[ch.id]?'done':''}"><span class="task-name">${esc(ch.name)}</span>${t.kind==='group'?`<span class="task-meta" style="display:block">목표 ${Number(ch.target||1)}개 · 완료 여부 체크</span>`:''}</span>`;row.querySelector('input').onchange=e=>changeCheck(c.id,state.period,ch.id,e.target.checked);section.appendChild(row)}box.appendChild(section)}if(!visible)box.innerHTML='<div class="empty">표시할 미완료 숙제가 없습니다.</div>'}
+function renderSummary(){const c=selectedChar(),s=c?stats(c.id,state.period):{done:0,total:0};$('doneCount').textContent=s.done;$('leftCount').textContent=s.total-s.done;const pct=s.total?Math.round(100*s.done/s.total):0;$('progressText').textContent=pct+'%';$('progressBar').style.width=pct+'%';$('todayText').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'long'})+' · '+(c?c.name+' 선택됨':'캐릭터를 추가해 주세요')}
+const memoEditSessions=new Set();
+function renderNotes(){const list=$('noteList'),editor=$('noteEditor');list.innerHTML='';for(const note of state.notes){const b=document.createElement('button');b.className='note-item'+(note.id===state.noteSelected?' active':'');b.textContent=note.title?.trim()||'제목 없는 메모';b.onclick=()=>{memoEditSessions.clear();state.noteSelected=note.id;persist()};list.appendChild(b)}const n=state.notes.find(x=>x.id===state.noteSelected);if(!n){editor.innerHTML='<div class="empty">새 메모를 추가해 주세요.</div>';return}editor.innerHTML=`<label for="noteTitle">제목</label><input id="noteTitle" placeholder="메모 제목"><label for="noteBody">내용</label><textarea id="noteBody" placeholder="메모 내용을 자유롭게 입력하세요."></textarea><div class="rowtools" style="margin-top:12px"><span class="helper">입력 시 자동 저장</span><button class="danger" id="deleteNoteBtn">메모 삭제</button></div>`;$('noteTitle').value=n.title||'';$('noteBody').value=n.body||'';for(const [id,key] of [['noteTitle','title'],['noteBody','body']])$(id).addEventListener('input',e=>{if(!memoEditSessions.has(n.id)){snapshot();memoEditSessions.add(n.id)}n[key]=e.target.value;if(saveBlocked){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');return}try{localStorage.setItem(STORE,JSON.stringify(state));$('saveStatus').textContent='✓ 자동 저장 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}catch(err){$('saveStatus').textContent='⚠ 저장 실패';$('saveStatus').classList.add('bad')}if(key==='title'){const selected=list.querySelector('.active');if(selected)selected.textContent=n.title.trim()||'제목 없는 메모'}});$('deleteNoteBtn').onclick=()=>{if(confirm('이 메모를 삭제할까요?')){memoEditSessions.clear();mutate(()=>{state.notes=state.notes.filter(x=>x.id!==n.id);state.noteSelected=state.notes[0]?.id||null})}}}
+
+function applyMobiTheme(){
+ const theme=['blue','pink','yellow'].includes(state.ui.theme)?state.ui.theme:'blue';
+ document.documentElement.setAttribute('data-mobi-theme',theme);
+ const picker=$('mobiThemeSelect');if(picker&&picker.value!==theme)picker.value=theme;
+}
+$('mobiThemeSelect').addEventListener('change',e=>{
+ const next=e.target.value;
+ if(!['blue','pink','yellow'].includes(next))return;
+ mutate(()=>{state.ui.theme=next});
+});
+function render(){applyMobiTheme();renderCharacterFold();document.body.classList.toggle('compact',state.ui.density==='compact');document.documentElement.style.setProperty('--font-scale',String((Number(state.ui.fontSize)||14)/14));renderChars();renderMatrix();renderTasks();renderSummary();renderNotes();document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===state.ui.view));for(const v of ['aggregate','tasks','memo','chat'])$(v+'View').hidden=state.ui.view!==v;document.querySelectorAll('[data-period]').forEach(b=>b.classList.toggle('active',b.dataset.period===state.period));$('taskFilter').textContent='미완료만 보기: '+(state.ui.incomplete?'켜짐':'꺼짐');$('matrixFilter').textContent='미완료만 보기: '+(state.ui.matrixIncomplete?'켜짐':'꺼짐');$('undoBtn').disabled=!history.length;$('quickAddBtn').disabled=$('addCharBtn').disabled=state.characters.length>=12}
+function modal(html){$('modalContent').innerHTML=html;$('modalBackdrop').classList.add('show')}
+function closeModal(){if(window.mobiGuideRequired)return;$('modalBackdrop').classList.remove('show');setTimeout(()=>{if(typeof mobiCheckBackupReminder==='function')mobiCheckBackupReminder()},0)}
+$('modalCloseX').onclick=closeModal;$('modalBackdrop').onclick=e=>{if(e.target===$('modalBackdrop'))closeModal()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();undo()}});
+function addCharacter(name){name=name.trim();if(!name)return alert('캐릭터 이름을 입력해 주세요.');if(state.characters.length>=12)return alert('최대 12명까지 추가할 수 있습니다.');mutate(()=>{const id='c_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);state.characters.push({id,name,createdAt:new Date().toISOString(),favorite:false});state.selected=id;state.ui.view='tasks'});$('newCharName').value='';closeModal()}
+$('quickAddBtn').onclick=()=>addCharacter($('newCharName').value);$('newCharName').onkeydown=e=>{if(e.key==='Enter')addCharacter(e.target.value)};$('addCharBtn').onclick=()=>{modal('<h2>캐릭터 추가</h2><div class="field"><label>이름</label><input id="modalCharName" placeholder="캐릭터 이름"></div><div class="modal-actions"><button class="secondary" id="cancel">취소</button><button id="confirmAdd">추가</button></div>');$('cancel').onclick=closeModal;$('confirmAdd').onclick=()=>addCharacter($('modalCharName').value);$('modalCharName').focus()};
+$('renameBtn').onclick=()=>{const c=selectedChar();if(!c)return alert('캐릭터를 선택해 주세요.');modal(`<h2>캐릭터 관리</h2><div class="field"><label>이름</label><input id="renameInput" value="${esc(c.name)}"></div><p>삭제 전에는 JSON 백업을 권장합니다. 삭제 후에는 되돌리기를 사용할 수 있습니다.</p><div class="modal-actions"><button class="danger" id="deleteChar">캐릭터 삭제</button><button class="secondary" id="cancel">취소</button><button id="saveRename">저장</button></div>`);$('cancel').onclick=closeModal;$('saveRename').onclick=()=>{const v=$('renameInput').value.trim();if(!v)return alert('이름을 입력해 주세요.');mutate(()=>c.name=v);closeModal()};$('deleteChar').onclick=()=>{modal(`<h2>캐릭터 삭제 확인</h2><p><strong>${esc(c.name)}</strong> 캐릭터와 이 캐릭터의 숙제 기록을 삭제할까요?</p><div class="modal-actions"><button class="secondary" id="cancelDelete">취소</button><button class="danger" id="confirmDelete">삭제하기</button></div>`);$('cancelDelete').onclick=closeModal;$('confirmDelete').onclick=()=>{mutate(()=>{state.characters=state.characters.filter(x=>x.id!==c.id);for(const k of Object.keys(state.records))if(k.startsWith(c.id+'|'))delete state.records[k];delete state.tradeByChar?.[c.id];state.selected=state.characters[0]?.id||null});closeModal()}}};
+function undo(){if(!history.length)return;memoEditSessions.clear();state=history.pop();persist()};$('undoBtn').onclick=undo;
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>mutate(()=>{state.ui.view=b.dataset.view}));document.querySelectorAll('[data-period]').forEach(b=>b.onclick=()=>mutate(()=>{state.period=b.dataset.period}));$('taskFilter').onclick=()=>mutate(()=>state.ui.incomplete=!state.ui.incomplete);$('matrixFilter').onclick=()=>mutate(()=>state.ui.matrixIncomplete=!state.ui.matrixIncomplete);
+$('resetChecksBtn').onclick=()=>{const c=selectedChar();if(!c)return;if(!confirm(`${c.name} 캐릭터의 현재 ${state.period==='daily'?'일일':'주간'} 숙제 기록을 초기화할까요?`))return;mutate(()=>{state.records[recordKey(c.id,state.period)]={}})};
+$('addTaskBtn').onclick=()=>{modal(`<h2>숙제 추가</h2><p>현재 ${state.period==='daily'?'일일':'주간'} 주기에 체크형 숙제를 추가합니다.</p><div class="field"><label>숙제 이름</label><input id="taskName" placeholder="새 숙제"></div><div class="modal-actions"><button class="secondary" id="cancel">취소</button><button id="saveTask">추가</button></div>`);$('cancel').onclick=closeModal;$('saveTask').onclick=()=>{const name=$('taskName').value.trim();if(!name)return alert('이름을 입력해 주세요.');mutate(()=>state.tasks[state.period].push({id:'custom_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name,kind:'check',custom:true}));closeModal()}};
+function editTrade(charId){
+ const c=state.characters.find(x=>x.id===charId);if(!c)return;
+ const original=tradeItems(charId);let draft=clone(original);
+ modal(`<h2>${esc(c.name)} · 물물교환 설정</h2><p class="helper">이 캐릭터에만 적용됩니다. 수량은 체크할 때 참고용 목표치이며, 체크는 품목별 완료 여부를 기록합니다.</p><div id="tradeRows"></div><div class="rowtools" style="margin-top:10px"><button class="secondary" id="tradeAdd">＋ 품목 추가</button><button class="secondary" id="tradeRestore">기본 품목 복원</button></div><div class="modal-actions"><button class="secondary" id="tradeCancel">취소</button><button id="tradeSave">저장</button></div>`);
+ const draw=()=>{const root=$('tradeRows');root.innerHTML='';draft.forEach((item,i)=>{const row=document.createElement('div');row.className='edit-row';row.innerHTML=`<input class="trade-name" aria-label="품목 이름" placeholder="품목 이름" value="${esc(item.name)}"><input class="trade-target" aria-label="목표 수량" type="number" min="1" max="99999" value="${Number(item.target)||1}" style="flex:0 0 85px;width:85px"><button class="danger trade-remove" title="품목 삭제">삭제</button>`;row.querySelector('.trade-name').oninput=e=>draft[i].name=e.target.value;row.querySelector('.trade-target').oninput=e=>draft[i].target=e.target.value;row.querySelector('.trade-remove').onclick=()=>{draft.splice(i,1);draw()};root.appendChild(row)})};
+ $('tradeAdd').onclick=()=>{draft.push({id:'trade_custom_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),name:'',target:1});draw()};
+ $('tradeRestore').onclick=()=>{if(confirm('이 캐릭터의 물물교환 품목을 기본 목록으로 되돌릴까요?')){draft=clone(baseTasks.weekly.find(t=>t.id==='trade').children);draw()}};
+ $('tradeCancel').onclick=closeModal;
+ $('tradeSave').onclick=()=>{const names=draft.map(x=>String(x.name||'').trim());if(names.some(x=>!x))return alert('모든 품목의 이름을 입력해 주세요.');if(draft.some(x=>!Number.isInteger(Number(x.target))||Number(x.target)<1||Number(x.target)>99999))return alert('목표 수량은 1~99999의 정수로 입력해 주세요.');mutate(()=>{state.tradeByChar=state.tradeByChar||{};state.tradeByChar[charId]=draft.map((x,i)=>({...x,name:names[i],target:Number(x.target)}))});closeModal()};draw();
+}
+function editTasks(){
+ const period=state.period;
+ modal(`<h2>숙제 편집 · 숨기기 · 순서</h2><p>기본 숙제는 숨길 수 있고, 직접 추가한 숙제는 삭제할 수 있습니다.</p><div id="editRows"></div><div class="modal-actions"><button class="secondary" id="cancel">닫기</button></div>`);
+ $('cancel').onclick=closeModal;
+ function draw(){
+  const rows=$('editRows');rows.innerHTML='';
+  state.tasks[period].forEach((t,i)=>{
+   const row=document.createElement('div');row.className='edit-row';
+   row.innerHTML=`<input value="${esc(t.name)}"><button class="secondary up">↑</button><button class="secondary down">↓</button><button class="secondary hide">${t.hidden?'표시':'숨김'}</button>${t.custom?'<button class="danger delete">삭제</button>':''}`;
+   row.querySelector('input').onchange=e=>{const v=e.target.value.trim();if(v)mutate(()=>{t.name=v});draw()};
+   row.querySelector('.up').onclick=()=>swap(i,-1);
+   row.querySelector('.down').onclick=()=>swap(i,1);
+   row.querySelector('.hide').onclick=()=>{mutate(()=>{t.hidden=!t.hidden});draw()};
+   if(t.custom){row.querySelector('.delete').onclick=()=>{if(confirm('이 숙제를 삭제할까요?')){mutate(()=>{state.tasks[period].splice(i,1)});draw()}}}
+   rows.appendChild(row);
+  });
+ }
+ function swap(i,d){const arr=state.tasks[period];if(i+d<0||i+d>=arr.length)return;mutate(()=>{[arr[i],arr[i+d]]=[arr[i+d],arr[i]]});draw()}
+ draw();
+}
+$('editTaskBtn').onclick=editTasks;
+$('newNoteBtn').onclick=()=>mutate(()=>{const id='note_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);state.notes.unshift({id,title:'',body:'',createdAt:new Date().toISOString()});state.noteSelected=id});
+$('settingsBtn').onclick=()=>{modal(`<h2>설정</h2><p>초기화 시간은 게임 규칙에 맞게 변경할 수 있습니다. 결계·구멍의 횟수 계산에도 적용됩니다.</p><div class="settings-grid"><div><label>일일 초기화</label><input type="time" id="dailyHour" value="${esc(state.settings.dailyHour)}"></div><div><label>주간 초기화 요일</label><select id="weeklyDay">${['일','월','화','수','목','금','토'].map((n,i)=>`<option value="${i}" ${Number(state.settings.weeklyDay)===i?'selected':''}>${n}요일</option>`).join('')}</select></div><div><label>주간 초기화 시간</label><input type="time" id="weeklyHour" value="${esc(state.settings.weeklyHour)}"></div><div><label>결계 정각 알림</label><select id="barrierReminderEnabled"><option value="off">OFF (기본)</option><option value="on">ON · 팝업 + 짧은 알림음</option></select></div><div><label>표시 밀도</label><select id="density"><option value="normal">기본</option><option value="compact">촘촘하게</option></select></div><div><label>글자 크기</label><select id="fontSize">${[12,13,14,15,16,18].map(n=>`<option value="${n}">${n}px</option>`).join('')}</select></div></div><div class="rowtools" style="margin-top:14px"><button type="button" class="secondary" id="testBarrierReminder">🔔 결계 알림 테스트</button></div><p class="helper" style="margin-top:8px">테스트는 알림 설정과 남은 결계 횟수를 확인하고 즉시 팝업을 띄웁니다. 실제 정각 알림과는 별개입니다.</p><div class="modal-actions"><button class="secondary" id="cancel">취소</button><button id="saveSettings">저장</button></div>`);$('barrierReminderEnabled').value=state.ui.barrierReminderEnabled?'on':'off';$('density').value=state.ui.density;$('fontSize').value=String(state.ui.fontSize);$('cancel').onclick=closeModal;$('testBarrierReminder').onclick=()=>{const remaining=remainingBarriers();if(!remaining.length)return alert('모든 캐릭터의 결계가 완료되어 알림 대상이 없습니다.');if($('barrierReminderEnabled').value!=='on')return alert('결계 정각 알림을 ON으로 바꾸고 저장해 주세요.');unlockReminderAudio();closeModal();showBarrierReminder(remaining,new Date())};$('saveSettings').onclick=()=>{mutate(()=>{for(const k of ['dailyHour','weeklyDay','weeklyHour'])state.settings[k]=$(k).value;state.ui.barrierReminderEnabled=$('barrierReminderEnabled').value==='on';state.ui.density=$('density').value;state.ui.fontSize=Number($('fontSize').value)});closeModal()}};
+function downloadBackup(data,name='mobi-homework-backup-v8.json'){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$('exportBtn').onclick=()=>{downloadBackup(state);mobiMarkBackup();};
+$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{const incoming=migrate(JSON.parse(await f.text()));if(!confirm('현재 데이터를 새 백업 내용으로 교체할까요? 기존 데이터는 먼저 자동으로 JSON 백업합니다.'))return;downloadBackup(state,'mobi-before-import.json');snapshot();memoEditSessions.clear();state=incoming;saveBlocked=false;persist();alert('백업을 불러왔습니다.')}catch(err){alert('백업을 불러오지 못했습니다: '+err.message)}finally{e.target.value=''}};
+if(initialError){$('saveStatus').textContent='⚠ 저장 중단';$('saveStatus').classList.add('bad');alert(initialError)}else persist(false);
+render();
+
+// 뚠비서: 서버 없이 작동하는 규칙 기반 자연어 숙제 도우미
+let chatPending=null;
+let chatLastChars=[];
+const TTOON_GREETING_KEY='mobiTtoonGreetingDateV1';
+function chatDailyGreeting(){
+ const today=keyDate(new Date());
+ let greeted=false;
+ try{greeted=localStorage.getItem(TTOON_GREETING_KEY)===today}catch(e){}
+ if(greeted)return;
+ chatSay('어소세용~ 💜\n오늘도 숙제하러 오셨나용? ㅋㅋㅋ\n뚠비서 대기 중임당! 편하게 시켜주세용~');
+ try{localStorage.setItem(TTOON_GREETING_KEY,today)}catch(e){}
+}
+document.querySelector('[data-view="chat"]').addEventListener('click',chatDailyGreeting);
+
+function chatSay(message,who='bot'){
+ const el=document.createElement('div');el.className='chat-bubble '+who;el.textContent=String(message).replace(/\\n/g,'\n');
+ $('chatLog').appendChild(el);$('chatLog').scrollTop=$('chatLog').scrollHeight;
+}
+function chatHidePreview(){chatPending=null;$('chatPreview').hidden=true;$('chatPreview').replaceChildren()}
+function chatAlias(t){
+ const aliases={barrier:['결계'],hole:['심층구멍','심층 구멍','구멍'], 'free-draw':['무료뽑기','무료 뽑기','공짜뽑기'],
+ 'weekday-dungeon':['요일던전','요일 던전'],coin:['동전'],tribute:['공물'],'part-time':['아르바이트','알바'],
+ 'guild-request':['길드의뢰','길드 의뢰'],'membership-part-time':['멤버십알바','멤버십 알바'],
+ 'field-boss':['필드보스','필보'],vanguard:['뱅가드'],abyss:['어비스'],kavrak:['카브락','꺼드럭','까부락','카부락'],airel:['에이렐','에렐'],succubus:['서큐'],
+ 'weekend-abyss':['주말어비스'],'weekend-raid':['주말레이드']};
+ return [t.name,...(aliases[t.id]||[]),...((state.taskAliases||{})[t.id]||[])];
+}
+function chatTasksIn(text){
+ const found=[];
+ // 별칭도 포함해 긴 이름부터 비교해 '멤버십알바'를 '알바'로 오인하지 않습니다.
+ const candidates=[];
+ for(const period of ['daily','weekly'])for(const t of state.tasks[period]||[]){
+  if(t.hidden)continue;
+  if(t.kind==='group'){
+   if(t.id==='trade')continue;
+   for(const ch of t.children||[])if(!ch.hidden)candidates.push({task:ch,period,names:[ch.name]});
+  }else candidates.push({task:t,period,names:chatAlias(t)});
+ }
+ const hits=[];
+ for(const entry of candidates)for(const alias of entry.names){
+  let at=text.indexOf(alias);
+  while(alias&&at!==-1){hits.push({...entry,start:at,end:at+alias.length,alias});at=text.indexOf(alias,at+alias.length)}
+ }
+ hits.sort((a,b)=>(b.end-b.start)-(a.end-a.start));
+ const accepted=[];
+ for(const hit of hits){
+  if(accepted.some(x=>hit.start>=x.start&&hit.end<=x.end))continue;
+  // '알바 말고 멤버십알바' 같은 제외 표현
+  const tail=text.slice(hit.end,hit.end+7);
+  if(/^\s*말고/.test(tail))continue;
+  accepted.push(hit);
+ }
+ for(const hit of accepted)if(!found.some(x=>x.task.id===hit.task.id&&x.period===hit.period))found.push({task:hit.task,period:hit.period});
+ return found;
+}
+function chatCharsIn(text){
+ const hits=[];
+ for(const c of sortedChars())for(const name of [c.name,...((state.charAliases||{})[c.id]||[])]){
+  if(!name)continue;
+  let at=text.indexOf(name);
+  while(at!==-1){hits.push({c,start:at,end:at+name.length,name});at=text.indexOf(name,at+name.length)}
+ }
+ hits.sort((a,b)=>(b.end-b.start)-(a.end-a.start));
+ const used=[];
+ for(const h of hits)if(!used.some(x=>h.start<x.end&&h.end>x.start))used.push(h);
+ const chars=[...new Map(used.sort((a,b)=>a.start-b.start).map(h=>[h.c.id,h.c])).values()];
+ // '모든 일일숙제'는 숙제 범위이지 캐릭터 범위가 아닙니다.
+ // 전체 캐릭터 변경은 캐릭터를 명시한 표현에서만 허용합니다.
+ const allCharacters=/(?:모든|전체|전부|모두|전)\s*캐릭터|캐릭터\s*(?:전체|전부|모두)/.test(text);
+ // 명시된 캐릭터와 '전체 캐릭터'가 함께 있으면 추측하지 않고 확인합니다.
+ if(chars.length&&allCharacters)return {chars:[],all:false};
+ if(chars.length)return {chars,all:false};
+ if(allCharacters)return {chars:sortedChars(),all:true};
+ if(/(?:선택한|현재|이\s*캐릭터)/.test(text)&&selectedChar())return {chars:[selectedChar()],all:false};
+ if(/(?:그중|그 캐릭터|걔들|그애들)/.test(text)&&chatLastChars.length)return {chars:sortedChars().filter(c=>chatLastChars.includes(c.id)),all:false};
+ return {chars:[],all:false};
+}
+let chatAwaitingAlias=false;
+let chatAliasChar=null;
+let chatAwaitingScope=false;
+let chatLastQuery="";
+let chatLastIntent="";
+function chatConversation(text){
+ const t=text.trim().replace(/[!?~.]+$/g,'').trim();
+ if(/^(?:도움말|명령어|사용법|뭐(?:를|을)? 할 수 있어|할수있는일|기능 알려줘|명령어 알려줘)/.test(t)){chatOpenHelp();return true}
+ if(/^(?:취소|그만|됐어|괜찮아|아니|아니요|아니용)$/.test(t)){
+  if(chatAwaitingAlias||chatAwaitingScope||chatPending){chatAwaitingAlias=false;chatAliasChar=null;chatAwaitingScope=false;chatHidePreview();chatSay('넵! 진행 중이던 요청은 취소했어용 💜');return true}
+ }
+ if(chatAwaitingAlias&&chatAliasChar){
+  let alias=t.replace(/^(?:애칭은|별명은|애칭|별명)\s*/,'').replace(/(?:으로|라고|이라고)\s*(?:불러줘|해줘|기억해줘)?$/,'').trim();
+  if(/^[가-힣a-zA-Z0-9]{1,30}$/.test(alias)){
+   const c=state.characters.find(x=>x.id===chatAliasChar);
+   if(c){const collision=state.characters.some(x=>x.name===alias||(x.id!==c.id&&((state.charAliases||{})[x.id]||[]).includes(alias)));
+    if(collision){chatSay('이미 다른 캐릭터 이름이나 애칭으로 사용 중이에용! 다른 이름을 알려주세용.');return true}
+    mutate(()=>{state.charAliases=state.charAliases||{};state.charAliases[c.id]=[...new Set([...(state.charAliases[c.id]||[]),alias])]});
+    chatAwaitingAlias=false;chatAliasChar=null;chatSay(`${c.name}의 애칭 '${alias}' 기억했어용! 💜`);return true;
+   }
+  }
+ }
+ if(chatAwaitingAlias&&!chatAliasChar){
+  const c=state.characters.find(x=>x.name===t||((state.charAliases||{})[x.id]||[]).includes(t));
+  if(c){chatAliasChar=c.id;chatSay(`${c.name}의 새 애칭은 뭘로 할까용? 💜`);return true}
+ }
+ if(chatAwaitingScope){
+  if(/^(?:전체|모두|전부|전체 캐릭터)$/.test(t)){chatAwaitingScope=false;chatLastIntent='query';return chatQuery('전체 오늘 남은 숙제 알려줘')}
+  const chosen=chatCharsIn(t);
+  if(chosen.chars.length){chatAwaitingScope=false;chatLastChars=chosen.chars.map(c=>c.id);return chatQuery(chosen.chars.map(c=>c.name).join(', ')+' 오늘 남은 숙제 알려줘')}
+ }
+ if(/^(?:응|웅|넹|네|좋아|그래|해줘|부탁해|ㅇㅇ)(?:요|용)?$/.test(t)){
+  if(chatPending){chatSay('변경하려면 위의 ‘✓ 적용하기’ 버튼을 눌러주세용! 💜');return true}
+  if(chatLastIntent==='motivation'){chatLastIntent='';chatSay('좋아용! 오늘 남은 숙제부터 확인해볼게용 💜');return chatQuery('오늘 남은 숙제 알려줘')}
+  chatSay('넹! 💜 원하시는 숙제를 말씀해주세용~');return true
+ }
+ if(/^(?:오늘 뭐 남았어|오늘 뭐 남음|오늘 할 거 뭐야|오늘 숙제 뭐야)$/.test(t)){
+  chatAwaitingScope=true;chatSay('어떤 캐릭터의 숙제를 확인할까용? 전체 캐릭터도 가능해용!');return true
+ }
+ if(/(?:숙제|일퀘|주간).*(?:하기 싫|귀찮|힘들)|^(?:피곤해|지쳤어|힘들어)$/.test(t)){
+  chatLastIntent='motivation';chatSay('ㅋㅋㅋ 그럴 때 있죵! 💜 남은 숙제부터 가볍게 확인해드릴까용?');return true
+ }
+ if(/^(?:안녕|안녕하세요|안녕하세용|하이|ㅎㅇ|반가워|방가)(?:요|용)?$/.test(t))return false;
+ if(/^(?:고마워|고마워요|고마워용|감사해|감사합니다|땡큐|ㄱㅅ)$/.test(t)){chatSay('언제든 불러주세용~ 💜');return true}
+ if(/^(?:잘했어|최고야|멋져|귀여워|착하다)(?:요|용)?$/.test(t)){chatSay('헤헤 칭찬 감사해용! 더 열심히 도와드릴게용 ㅋㅋㅋ 💜');return true}
+ if(/^(?:잘가|바이|빠이|나중에 봐|이따 봐)(?:요|용)?$/.test(t)){chatSay('조심히 다녀오세용~ 다음에 또 봐용 💜');return true}
+ if(/^(?:뭐해|심심해|놀아줘)(?:요|용)?$/.test(t)){chatSay('뚠비서는 숙제 챙길 준비 중이에용 ㅋㅋㅋ 💜 도움말 버튼에서 할 수 있는 일도 확인해보세용!');return true}
+ return false;
+}
+function chatOpenHelp(){
+ const groups=[
+ ['🔎 숙제 조회',['오늘 남은 숙제 알려줘','뚠뚠 남은 숙제 알려줘','카브락 안 한 캐릭터 알려줘','카브락 전체 현황 보여줘','숙제별 미완료 요약']],
+ ['✅ 숙제 기록',['뚠뚠 무료뽑기 완료','뚠뚠, 모도 카브락 완료','뚠개 결계 3번 했어','선택한 캐릭터 일일숙제 다 했어']],
+ ['💜 캐릭터 애칭',['애칭 등록하고 싶어','뚠개는 앞으로 개뚠이라고 불러줘','내 캐릭터 애칭 목록 보여줘','개뚠 애칭 삭제해줘']],
+ ['🧮 마도저항 계산',['🧮 계산기 시작','마압 1500 마저 1000','마도압력 1500이고 내 저항 1000이면?','그럼 저항 1300이면?','마도 계산 도움말']],
+ ['💬 대화·도움',['안녕','숙제하기 싫어','오늘 뭐 남았어?','고마워','도움말']]
+ ];
+ const wrap=document.createElement('div');wrap.innerHTML='<h2>❔ 뚠비서 사용 설명서</h2><p class="helper">예시를 누르면 바로 채팅으로 전송해용. 숙제 변경은 적용하기 버튼으로 한 번 더 확인해야 해용.</p>';
+ for(const [name,commands] of groups){const section=document.createElement('section');section.style.marginTop='15px';const h=document.createElement('strong');h.textContent=name;section.appendChild(h);const buttons=document.createElement('div');buttons.className='chat-hints';buttons.style.marginTop='8px';for(const cmd of commands){const b=document.createElement('button');b.type='button';b.className='secondary';b.textContent=cmd;b.onclick=()=>{closeModal();if(cmd==='🧮 계산기 시작'){magicStart()}else{$('chatInput').value=cmd;chatSubmit()}};buttons.appendChild(b)}section.appendChild(buttons);wrap.appendChild(section)}
+ const guideButton=document.createElement('button');guideButton.type='button';guideButton.className='secondary';guideButton.style.marginTop='16px';guideButton.textContent='📖 뚠뚠한 모비일지 가이드 다시 보기';guideButton.onclick=()=>mobiShowGuide(false);wrap.appendChild(guideButton);
+ $('modalContent').replaceChildren(wrap);$('modalBackdrop').classList.add('show');
+}
+$('chatHelpBtn').onclick=chatOpenHelp;
+function chatSpecial(text){
+ const clean=text.trim().replace(/[‘’“”"']/g,'').replace(/[!?~.]+$/g,'').trim();
+ // 애칭을 등록하고 싶다는 의사만 밝힌 경우, 캐릭터 이름으로 오인하지 않습니다.
+ if(/^(?:(?:나|내|캐릭터)\s*)?(?:애칭|별명)\s*(?:등록|추가|설정|지정|만들|기억|가르쳐|알려|바꾸|변경)(?:하고|해|하고자|하려고|하고픈|하고싶|하고 싶|할래|할게|할께|할 수 있|가능)(?:은|는|어|어요|어용|은데|는데|어도|어용\?|어\?)?(?:요|용|다|데|데요|데용|습니다|ㅁ)?$/i.test(clean)
+    || /^(?:애칭|별명)\s*(?:등록|추가|설정)(?:하고\s*싶은데|하고\s*싶어|하고\s*싶어요|하고\s*싶어용|할래|할게|해줘|해주세요|해주세용|가능해\??)$/i.test(clean)
+    || /^(?:애칭|별명)\s*(?:등록|추가|설정)\s*(?:방법|어떻게|도와줘|도와주세요)\??$/i.test(clean)){
+  chatAwaitingAlias=true;chatAliasChar=null;
+  chatSay('물론이죵! 💜 어떤 캐릭터에 어떤 애칭을 붙일까용?\n예: "뚠개 개뚠" 또는 "뚠개는 앞으로 개뚠이라고 불러줘"');
+  return true;
+ }
+ if(chatAwaitingAlias && !/(?:앞으로|불러줘|이라고|라고|애칭은|별명은)/.test(clean)){
+  // 안내에 따라 "뚠개 개뚠"처럼 짧게 대답해도 등록합니다.
+  const entries=state.characters.flatMap(c=>[c.name,...((state.charAliases||{})[c.id]||[])].map(name=>({c,name}))).sort((a,b)=>b.name.length-a.name.length);
+  for(const entry of entries){
+   if(!clean.startsWith(entry.name))continue;
+   const alias=clean.slice(entry.name.length).trim().replace(/^(?:이는|이가|는|은|의|를|을)\s*/, '').trim();
+   if(!alias||/\s/.test(alias)||/(?:숙제|완료|남은|알려|삭제|목록)/.test(alias))break;
+   chatAwaitingAlias=false;
+   if(alias.length>30||state.characters.some(c=>c.id!==entry.c.id&&(c.name===alias||((state.charAliases||{})[c.id]||[]).includes(alias)))){chatSay('다른 캐릭터 이름과 겹치거나 너무 긴 애칭이에용! 다른 애칭으로 알려주세용.');return true}
+   const existing=(state.charAliases||{})[entry.c.id]||[];
+   if(alias===entry.c.name||existing.includes(alias)){chatSay(`이미 ${entry.c.name}의 애칭으로 알고 있어용! 💜`);return true}
+   mutate(()=>{state.charAliases=state.charAliases||{};state.charAliases[entry.c.id]=[...existing,alias]});
+   chatSay(`${entry.c.name}의 애칭 '${alias}' 등록했어용! 💜`);return true;
+  }
+  chatAwaitingAlias=false;
+ }
+
+ if(/^(안녕|안녕하세요|안녕하세용|하이|ㅎㅇ|반가워|방가)(?:요|용)?$/i.test(clean)){
+  const main=state.characters.find(c=>c.favorite);
+  chatSay(`어소세용~ ${main?main.name+'님!':'반가워용!'} 💜\n오늘도 숙제 파이팅임당ㅋㅋㅋ`);return true;
+ }
+ const charName='(.+?)';
+ let m=clean.match(/^(?:내\s*)?본캐(?:는|를|가)?\s*(.+?)(?:이야|야|입니다|로\s*해줘|로\s*설정해줘)?$/);
+ if(m){chatSay('본캐는 캐릭터 목록의 ⭐ 별표를 눌러 지정해주세용!');return true}
+ if(/(?:애칭|별명)/.test(clean)&&/(?:등록하고\s*싶|등록\s*방법|등록\s*어떻게|애칭\s*등록\s*할|별명\s*등록\s*할)/.test(clean)&&!state.characters.some(c=>clean.startsWith(c.name))){
+  chatAwaitingAlias=true;
+  chatSay('애칭 등록 도와드릴게용! 💜\n"뚠개 개뚠"처럼 캐릭터 이름과 원하는 애칭을 알려주세용.');return true;
+ }
+ if(/(?:애칭|별명)\s*(?:목록|보여|알려)/.test(clean)){
+  const lines=state.characters.map(c=>`${c.name}: ${((state.charAliases||{})[c.id]||[]).join(', ')||'없음'}`);
+  chatSay('등록된 캐릭터 애칭이에용!\n'+lines.join('\n'));return true;
+ }
+ // 애칭 등록은 정규식이 캐릭터 이름의 조사를 삼키지 않도록, 등록된 이름부터 매칭합니다.
+ // 예: '뚠개는 앞으로 개뚠이라고 불러줘' → 뚠개 / 개뚠
+ const aliasesOf=c=>((state.charAliases||{})[c.id]||[]);
+ const knownNames=state.characters.flatMap(c=>[c.name,...aliasesOf(c)].map(name=>({c,name})))
+  .filter(x=>x.name).sort((a,b)=>b.name.length-a.name.length);
+ let registration=null;
+ const registerIntent=/(?:애칭|별명|앞으로|불러줘|불러도|부를게|부를래|기억해줘|알아들어줘|등록해줘)/.test(clean);
+ if(registerIntent&&!/(?:애칭|별명)\s*(?:삭제|지워|제거|목록)/.test(clean)&&!/(?:숙제\s*)(?:애칭|별명)/.test(clean)){
+  for(const entry of knownNames){
+   if(!clean.startsWith(entry.name))continue;
+   let tail=clean.slice(entry.name.length).trim();
+   // '뚠개의 애칭은' / '뚠개는 앞으로' / '뚠개 애칭' / '뚠개를' 등
+   tail=tail.replace(/^(?:의\s*)?(?:애칭|별명)\s*(?:은|는|을|를|으로|로)?\s*/, '');
+   tail=tail.replace(/^(?:이는|이는|이가|이란|은|는|을|를|이|가)\s*/, '').replace(/^앞으로\s*/, '');
+   tail=tail.replace(/^(?:애칭|별명)\s*(?:은|는|을|를|으로|로)?\s*/, '');
+   tail=tail.replace(/\s*(?:이라고|라고)\s*(?:불러도\s*알아들어줘|불러줘|기억해줘|알아들어줘|부를게|부를래)(?:요|용)?$/, '');
+   tail=tail.replace(/\s*(?:으로|로)\s*(?:불러줘|기억해줘|등록해줘|설정해줘|알아들어줘)(?:요|용)?$/, '');
+   tail=tail.replace(/\s*(?:등록해줘|기억해줘|설정해줘|해줘|등록|기억)(?:요|용)?$/, '');
+   tail=tail.replace(/\s*(?:이야|야|입니다)$/, '').trim();
+   // 동작 문장이 남았다면 애칭으로 오인하지 않습니다.
+   if(!tail||/(?:불러|애칭|별명|앞으로|등록|기억|알아들어)/.test(tail))continue;
+   // '개뚠으로' 형태는 끝의 조사만 제거합니다.
+   tail=tail.replace(/(?:으로|로)$/, '').trim();
+   if(tail)registration={c:entry.c,alias:tail};
+   break;
+  }
+  if(registration){
+   const {c,alias}=registration;
+   if(alias.length>30||/\s/.test(alias)||state.characters.some(x=>x.id!==c.id&&(x.name===alias||aliasesOf(x).includes(alias)))){
+    chatSay('애칭이 너무 길거나 다른 캐릭터 이름/애칭과 겹쳐용. 다른 애칭을 알려주세용!');return true;
+   }
+   if(alias===c.name||aliasesOf(c).includes(alias)){chatSay(`${c.name}의 애칭 '${alias}'은 이미 알고 있어용! 💜`);return true;}
+   mutate(()=>{state.charAliases=state.charAliases||{};state.charAliases[c.id]=[...new Set([...aliasesOf(c),alias])]});
+   chatSay(`${c.name}의 애칭 '${alias}' 기억했습니당! 💜`);return true;
+  }
+  if(/(?:애칭|별명|앞으로)/.test(clean)){
+   chatSay('애칭을 등록할 캐릭터를 못 찾았어용ㅠㅠ 예: "뚠개는 앞으로 개뚠이라고 불러줘"처럼 말씀해주세용!');return true;
+  }
+ }
+ m=clean.match(/^(.+?)\s*(?:애칭|별명)\s*(?:삭제|지워|제거)/);
+ if(m){const alias=m[1].trim();const owner=state.characters.find(c=>((state.charAliases||{})[c.id]||[]).includes(alias));
+  if(!owner){chatSay('그 애칭은 등록되어 있지 않아용!');return true}
+  mutate(()=>{state.charAliases[owner.id]=state.charAliases[owner.id].filter(x=>x!==alias)});
+  chatSay(`${owner.name}의 애칭 '${alias}' 삭제했어용!`);return true;
+ }
+ m=clean.match(/^(.+?)\s*(?:숙제\s*)?(?:애칭|별명)(?:으로|은|는)?\s*(.+?)\s*(?:등록해줘|기억해줘|해줘)$/);
+ if(m){const t=[...state.tasks.daily,...state.tasks.weekly].find(t=>t.name===m[1].trim());const alias=m[2].trim();
+  if(!t||!alias||alias.length>30){chatSay('숙제 이름과 애칭을 확인해주세용!');return true}
+  mutate(()=>{state.taskAliases=state.taskAliases||{};state.taskAliases[t.id]=[...new Set([...(state.taskAliases[t.id]||[]),alias])]});chatSay(`${t.name}의 별명 '${alias}' 기억했어용!`);return true;
+ }
+ return false;
+}
+function chatCount(text){
+ const korean={'한':1,'두':2,'세':3,'네':4,'다섯':5,'여섯':6,'일곱':7};
+ const m=text.match(/(\d+)\s*(?:번|회|판)/);
+ if(m)return Number(m[1]);
+ const k=text.match(/(한|두|세|네|다섯|여섯|일곱)\s*(?:번|회|판)/);
+ return k?korean[k[1]]:null;
+}
+function chatQuery(text){
+ const question=/(?:숙제별|종류별|항목별|누구|알려|남았|남은|안\s*(?:한|간|깬|끝낸|돌린|잡은|한\s*캐릭터)|못\s*(?:한|간|깬|끝낸)|미완료|현황|몇\s*회|몇\s*번|뭐\s*남)/.test(text);
+ const hasAction=/(?:했어|했다|완료했|끝냈|체크해|처리해|취소해|빼줘|추가해|해제해|최대횟수)/.test(text);
+ // 숙제 이름만 말하거나 숙제 종류를 정정한 경우에는 캐릭터 이름을 요구하지 않고 현황을 안내합니다.
+ const bareTask=chatTasksIn(text).length>0&&!hasAction&&!chatCharsIn(text).chars.length;
+ if(!question&&!bareTask)return false;
+ const tasks=chatTasksIn(text),chosen=chatCharsIn(text);
+ if(/(?:숙제별|종류별|항목별)\s*(?:미완료|남은|요약|현황)/.test(text)){
+  const period=/오늘|일일/.test(text)?'daily':'weekly';const lines=[];
+  for(const t of state.tasks[period])if(!t.hidden&&t.kind!=='group'){
+   const names=sortedChars().filter(c=>!isDone(record(c.id,period),t)).map(c=>c.name);
+   if(names.length)lines.push(`${t.name}: ${names.length}명 (${names.join(', ')})`);
+  }
+  chatSay(lines.length?'숙제별 미완료 요약이에용!\n'+lines.join('\n'):'모두 완료했어용! 🎉');return true;
+ }
+
+ if(!state.characters.length){chatSay('아직 등록된 캐릭터가 없어용! 먼저 캐릭터를 추가해주세용~');return true}
+ const targets=chosen.chars.length?chosen.chars:sortedChars();
+ chatLastChars=targets.map(c=>c.id);
+ if(tasks.length){
+  const t=tasks[0].task,period=tasks[0].period;
+  const lines=targets.map(c=>{
+   const r=record(c.id,period);
+   if(t.kind==='counter')return `${c.name}: ${Number(r[t.id]||0)}/${maxCount(t.id)}회 · ${Math.max(0,maxCount(t.id)-Number(r[t.id]||0))}회 남음`;
+   return `${c.name}: ${r[t.id]?'완료 ✓':'미완료 ✕'}`;
+  });
+  const incompleteOnly=!/(?:전체\s*현황|완료.?미완료|모든\s*현황)/.test(text);
+  const output=incompleteOnly?lines.filter((line,i)=>!isDone(record(targets[i].id,period),t)):lines;
+  chatSay(output.length?`오홍 굿ㅋㅋ ${t.name} 현황 찾아왔습니당!\n${output.join('\n')}`:`${t.name} 숙제는 대상 캐릭터 모두 완료했어용! 오홍 굿 🎉`);
+ }else{
+  const period=/주간/.test(text)?'weekly':'daily';
+  const lines=targets.map(c=>{
+   const tasks=charLeaves(c.id,period).filter(t=>!isDone(record(c.id,period),t));
+   return `${c.name}: ${tasks.length?tasks.map(t=>t.kind==='counter'?`${t.name} ${Math.max(0,maxCount(t.id)-Number(record(c.id,period)[t.id]||0))}회`:t.name).join(', '):'모두 완료 ✓'}`;
+  });
+  chatSay(`${period==='weekly'?'주간':'일일'} 남은 숙제 찾아왔습니당!\n${lines.join('\n')}`);
+ }
+ return true;
+}
+function chatBuildActions(text){
+ const segments=text.replace(/[.!?]/g,' ').split(/\s*(?:그리고|했고|했으며|그다음|또)\s*/).map(x=>x.trim()).filter(Boolean);
+ let contextChars=[];
+ const actions=[],errors=[];
+ for(const segment of segments){
+  const chosen=chatCharsIn(segment);
+  if(chosen.chars.length){contextChars=chosen.chars;chatLastChars=chosen.chars.map(c=>c.id)}
+  const chars=chosen.chars.length?chosen.chars:contextChars;
+  if(!chars.length){errors.push(`“${segment}”: 캐릭터 이름을 못 찾았어용ㅠㅠ 이름을 정확히 적거나 “선택한 캐릭터”라고 말씀해주세용!`);continue}
+  const allPeriod=/(?:일일\s*숙제|오늘\s*숙제|주간\s*숙제)\s*(?:전부|모두|다)/.test(segment)||/(?:일일\s*숙제|오늘\s*숙제|주간\s*숙제).*(?:끝|완료)/.test(segment);
+  let matched=chatTasksIn(segment);
+  if(allPeriod&&!matched.length){
+   const period=/주간/.test(segment)?'weekly':'daily';
+   matched=(state.tasks[period]||[]).filter(t=>!t.hidden&&t.kind==='check').map(task=>({task,period}));
+  }
+  if(!matched.length){errors.push(`“${segment}”: 어떤 숙제인지 못 알아들었어용ㅠㅠ 숙제 이름을 다시 알려주세용!`);continue}
+  const negative=/(?:취소|되돌|빼|안\s*했|미완료|해제)/.test(segment);
+  const amount=chatCount(segment);
+  const setToMax=!negative&&/(?:최대\s*횟수|최대\s*회수|최대치|풀로|풀충|끝까지|전부\s*완료|모두\s*완료|다\s*완료)/.test(segment);
+  for(const c of chars)for(const {task,period} of matched){
+   if(task.kind==='counter'){
+    if(amount===null&&!setToMax){if(!errors.some(e=>e.includes(task.name+'는'))){errors.push(`“${segment}”: ${task.name}는 “2번 했어” 또는 “최대횟수까지 완료”처럼 말씀해주세용!`)}continue}
+    const before=Number(record(c.id,period)[task.id]||0),max=maxCount(task.id);
+    const after=setToMax?max:Math.max(0,Math.min(max,before+(negative?-amount:amount)));
+    actions.push({charId:c.id,charName:c.name,period,taskId:task.id,taskName:task.name,before,after,counter:true,max});
+   }else{
+    const before=!!record(c.id,period)[task.id],after=!negative;
+    actions.push({charId:c.id,charName:c.name,period,taskId:task.id,taskName:task.name,before,after,counter:false});
+   }
+  }
+ }
+ // 모호한 명령은 부분 적용도 하지 않습니다.
+ return {actions,errors};
+}
+function chatPreviewActions(result){
+ const panel=$('chatPreview');panel.replaceChildren();panel.hidden=false;
+ const title=document.createElement('strong');title.textContent='🔎 넵 알겠습니당! 요렇게 이해했어용';panel.appendChild(title);
+ const ul=document.createElement('ul');
+ for(const a of result.actions){
+  const li=document.createElement('li');
+  li.textContent=a.counter?`${a.charName} · ${a.taskName}: ${a.before}회 → ${a.after}회 (현재 최대 ${a.max}회)`:
+   `${a.charName} · ${a.taskName}: ${a.before?'완료':'미완료'} → ${a.after?'완료':'미완료'}`;
+  ul.appendChild(li);
+ }
+ panel.appendChild(ul);
+ if(result.errors.length){
+  const warn=document.createElement('div');warn.className='chat-alert';warn.textContent='확인이 필요해용!\n'+result.errors.join('\n');warn.style.whiteSpace='pre-wrap';panel.appendChild(warn);
+ }
+ const controls=document.createElement('div');controls.className='rowtools';controls.style.marginTop='10px';
+ const cancel=document.createElement('button');cancel.className='secondary';cancel.textContent='취소';cancel.onclick=()=>{chatHidePreview();chatSay('넵! 이번 변경은 취소했습니당.')};controls.appendChild(cancel);
+ if(result.actions.length&&!result.errors.length){
+  const apply=document.createElement('button');apply.textContent='✓ 적용하기';
+  apply.onclick=()=>{
+   // 확인 이후 상태가 변경되었다면 잘못된 덮어쓰기를 방지합니다.
+   const changed=result.actions.some(a=>a.counter?Number(record(a.charId,a.period)[a.taskId]||0)!==a.before:!!record(a.charId,a.period)[a.taskId]!==a.before);
+   if(changed){chatHidePreview();chatSay('앗! 확인하는 동안 기록이 바뀌었어용. 안전하게 적용하지 않았으니 다시 말씀해주세용!');return}
+   mutate(()=>{for(const a of result.actions)editableRecord(a.charId,a.period)[a.taskId]=a.after});
+   chatHidePreview();chatSay(`완료! ${result.actions.length}개 변경 반영했슴당 ㅋㅋㅋ 실수했다면 상단의 ‘되돌리기’를 눌러주세용! ✓`);
+  };controls.appendChild(apply);
+ }
+ panel.appendChild(controls);
+}
+function chatRenderShortcuts(){
+ const recent=$('chatRecent');recent.replaceChildren();
+ for(const cmd of (state.chatPins||[])){
+  const b=document.createElement('button');b.className='secondary';b.textContent='★ '+cmd;b.onclick=()=>{$('chatInput').value=cmd;$('chatInput').focus()};recent.appendChild(b);
+ }
+ for(const cmd of (state.chatRecent||[]).slice(0,4)){
+  const b=document.createElement('button');b.className='secondary';b.textContent='↻ '+cmd;b.onclick=()=>{$('chatInput').value=cmd;$('chatInput').focus()};recent.appendChild(b);
+ }
+}
+$('chatPin').onclick=()=>{const cmd=$('chatInput').value.trim();if(!cmd)return chatSay('즐겨찾기할 명령을 입력해주세용!');mutate(()=>{state.chatPins=state.chatPins||[];state.chatPins=state.chatPins.includes(cmd)?state.chatPins.filter(x=>x!==cmd):[cmd,...state.chatPins].slice(0,8)});chatRenderShortcuts();chatSay('명령 즐겨찾기를 변경했어용!')};
+// 마도저항 계산기: 입력을 코드로 실행하지 않는 고정 공식 계산기
+let magicLast=null;
+let magicWizard=null; // {stage,pressure} — 대화형 계산 입력 (저장 데이터와 별개)
+function magicStart(){magicWizard={stage:'pressure'};chatHidePreview();chatSay('🧮 마도저항 계산을 시작할게용! 💜\n먼저 기준이 되는 **마도압력** 수치를 알려주세용.\n예: 1500 또는 마압 1500');$('chatInput').focus();}
+function magicWizardInput(text){
+ if(!magicWizard)return false;
+ const t=text.replace(/,/g,'').trim();
+ if(/^(?:취소|그만|종료|계산 취소)$/.test(t)){magicWizard=null;chatSay('계산을 취소했어용! 필요하면 계산기 버튼을 다시 눌러주세용 💜');return true;}
+ // 다른 명령을 계산 숫자로 오해하지 않도록 단일 수치 응답만 받습니다.
+ const match=t.match(/^(?:(?:마도\s*압력|마압|압력|마도\s*저항|마저|저항)(?:이|가|은|는|:|=)?\s*)?([0-9]+(?:\.[0-9]+)?)\s*(?:이야|입니다|이에요|예요|이용|야|요|용)?[.!?]?$/);
+ if(!match){chatSay(magicWizard.stage==='pressure'?'마도압력 숫자를 알려주세용! 예: 1500 (취소하려면 “취소”)':'내 캐릭터의 마도저항 숫자를 알려주세용! 예: 1000 (취소하려면 “취소”)');return true;}
+ const n=Number(match[1]);if(!Number.isFinite(n)||n>1e9){chatSay('0부터 10억 이하의 숫자로 입력해 주세용!');return true;}
+ if(magicWizard.stage==='pressure'){magicWizard={stage:'resistance',pressure:n};chatSay(`마도압력 ${magicFormat(n)} 확인했어용! 💜\n이제 **내 캐릭터의 마도저항** 수치를 알려주세용.\n예: 1000`);return true;}
+ const pressure=magicWizard.pressure;magicWizard=null;return magicCalculator(`마압 ${pressure} 마저 ${n}`);
+}
+
+function magicFormat(n){return Number(n).toLocaleString('ko-KR',{maximumFractionDigits:2})}
+function magicCompute(pressure,resistance){
+ const gap=resistance-pressure;
+ const factor=gap<0?Math.pow(0.5,-gap/1000):gap>0?1+0.5*(1-Math.pow(0.5,gap/4000)):1;
+ return {factor,change:(factor-1)*100};
+}
+function magicCalculator(text){
+ const t=text.replace(/,/g,'').trim();
+ const pressureWord='(?:마도\\s*압력|마압|압력)';
+ const resistWord='(?:마도\\s*저항|마저|저항)';
+ const pressureRe=new RegExp(pressureWord+'(?:이|가|은|는|을|를|에|:|=|\\s)*(-?\\d+(?:\\.\\d+)?)','i');
+ const resistRe=new RegExp(resistWord+'(?:이|가|은|는|을|를|에|:|=|\\s)*(-?\\d+(?:\\.\\d+)?)','i');
+ const pm=t.match(pressureRe),rm=t.match(resistRe);
+ const hasMagic=/(?:마도\s*(?:압력|저항|계산)|마압|마저)/i.test(t);
+ const hasResist=/(?:마도\s*저항|마저|저항)/i.test(t);
+ const hasPressure=/(?:마도\s*압력|마압|압력)/i.test(t);
+ const asksCalc=/(?:계산|데미지|대미지|딜|몇\s*%|퍼센트|증가|감소|줄어|올라|차이|비교|효율|얼마|어떻|어때|이면|일까|될까|나와|결과|\?)/i.test(t);
+ const follow=!!magicLast && (asksCalc || /^(?:그럼|그러면|이번엔|이번에는|저항|압력)/.test(t));
+ const explicit=hasMagic || (hasResist && (hasPressure || follow)) || (follow && (pm||rm));
+ if(!explicit)return false;
+ // '저항 1000'만으로는 첫 계산을 시작하지 않음. 다만 계산 요청은 안내함.
+ if(/(?:계산기|계산\s*도움말|계산\s*방법|계산\s*어떻게)/.test(t) && !pm && !rm){
+  chatSay('🧮 마도저항 계산기예용!\n마도압력은 기준값, 마도저항은 내 캐릭터 수치예용.\n예: "마압 1500 마저 1000"\n예: "압력 1500에 내 저항 1000이면 데미지 얼마나 줄어?"\n계산 뒤에는 "그럼 저항 1300이면?"처럼 물어보셔도 돼용!');return true;
+ }
+ // 단순히 '마도저항'을 언급한 다른 숙제 명령은 가급적 가로채지 않음
+ if(!pm&&!rm&&!asksCalc)return false;
+ let pressure=pm?Number(pm[1]):(follow?magicLast.pressure:null);
+ let resistance=rm?Number(rm[1]):(follow?magicLast.resistance:null);
+ if(!pm&&!rm){
+  // 순서가 분명히 제시된 '마도 계산 1500 1000' 형태만 지원
+  const ordered=t.match(/(?:마도\s*계산|마압\s*마저\s*계산)\s*[:=]?\s*(-?\d+(?:\.\d+)?)\s*[,/\s]+\s*(-?\d+(?:\.\d+)?)/);
+  if(ordered){pressure=Number(ordered[1]);resistance=Number(ordered[2]);}
+  else return false;
+ }
+ if(pressure===null || resistance===null){
+  chatSay(pressure===null?'마도압력 수치도 알려주세용! 💜 예: 마압 1500 마저 1000':'마도저항 수치도 알려주세용! 💜 예: 마압 1500 마저 1000');return true;
+ }
+ if(!Number.isFinite(pressure)||!Number.isFinite(resistance)||pressure<0||resistance<0||pressure>1e9||resistance>1e9){chatSay('0 이상인 정상적인 스탯 숫자로 입력해 주세용!');return true;}
+ const r=magicCompute(pressure,resistance);
+ magicLast={pressure,resistance};
+ const direction=r.change< -1e-10?'감소':r.change>1e-10?'증가':'변화 없음';
+ const percent=Math.abs(r.change).toFixed(2);
+ const gap=Math.abs(resistance-pressure);
+ const formula=resistance<pressure?`0.5^(${magicFormat(gap)}/1000)`:resistance>pressure?`1 + 0.5 × (1 - 0.5^(${magicFormat(gap)}/4000))`:'1';
+ chatSay(`🧮 마도저항 계산 결과\n마도압력 ${magicFormat(pressure)} / 내 마도저항 ${magicFormat(resistance)}\n최종 데미지 ${direction==='변화 없음'?'변화 없음':percent+'% '+direction} (${r.change>0?'+':''}${r.change.toFixed(2)}%)\n기준 데미지의 ${(r.factor*100).toFixed(2)}% 적용\n계산식: ${formula}`);
+ return true;
+}
+function chatSubmit(){
+ const input=$('chatInput'),text=input.value.trim();if(!text)return;
+ input.value='';chatHidePreview();chatSay(text,'user');
+ mutate(()=>{state.chatRecent=[text,...(state.chatRecent||[]).filter(x=>x!==text)].slice(0,8)});chatRenderShortcuts();
+ if(magicWizardInput(text))return;
+ if(magicCalculator(text))return;
+ if(chatConversation(text))return;
+ if(chatSpecial(text))return;
+ const chosenNow=chatCharsIn(text);if(chosenNow.chars.length)chatLastChars=chosenNow.chars.map(c=>c.id);
+ if(chatQuery(text))return;
+ const result=chatBuildActions(text);
+ if(!result.actions.length&&!result.errors.length){chatSay('앗 제가 못 알아들었어용ㅠㅠ 캐릭터 이름이랑 숙제 이름을 함께 말씀해주세용!');return}
+ if(result.errors.length&&!result.actions.length){chatSay(result.errors.join('\n'));return}
+ chatPreviewActions(result);
+ if(result.errors.length)chatSay('일부 표현이 애매해서 적용 버튼을 잠가뒀어용! 문장을 조금 더 구체적으로 말씀해주세용~');
+}
+chatRenderShortcuts();
+$('chatSend').onclick=chatSubmit;
+$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();chatSubmit()}});
+document.querySelectorAll('[data-chat-example]').forEach(b=>b.onclick=()=>{$('chatInput').value=b.dataset.chatExample;chatSubmit()});
+$('magicStartBtn').onclick=magicStart;
+
+// 결계 정각 알림: 이 HTML 파일이 열려 있는 동안만 동작합니다.
+let reminderAudioContext=null;
+function unlockReminderAudio(){if(!state.ui.barrierReminderEnabled)return;try{const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;if(!reminderAudioContext)reminderAudioContext=new AudioCtx();if(reminderAudioContext.state==='suspended')reminderAudioContext.resume().catch(()=>{});}catch(e){}}
+document.addEventListener('pointerdown',unlockReminderAudio,{passive:true});
+document.addEventListener('keydown',unlockReminderAudio);
+function playReminderSound(){try{if(!reminderAudioContext||reminderAudioContext.state!=='running')return;const ctx=reminderAudioContext;for(const [offset,freq] of [[0,740],[0.17,980]]){const oscillator=ctx.createOscillator(),gain=ctx.createGain(),start=ctx.currentTime+offset;oscillator.type='sine';oscillator.frequency.value=freq;gain.gain.setValueAtTime(0.0001,start);gain.gain.exponentialRampToValueAtTime(0.12,start+0.02);gain.gain.exponentialRampToValueAtTime(0.0001,start+0.14);oscillator.connect(gain);gain.connect(ctx.destination);oscillator.start(start);oscillator.stop(start+0.15);}}catch(e){}}
+function remainingBarriers(){return sortedChars().map(c=>({name:c.name,left:Math.max(0,7-Math.max(0,Number(record(c.id,'weekly').barrier||0)))})).filter(c=>c.left>0)}
+function showBarrierReminder(remaining,now){$('barrierReminderTime').textContent=now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})+' · 매시간 정각';$('barrierReminderList').replaceChildren(...remaining.map(c=>{const li=document.createElement('li');li.textContent=`${c.name} · ${c.left}회 남음`;return li}));$('barrierReminder').classList.add('show');playReminderSound();}
+function closeBarrierReminder(){$('barrierReminder').classList.remove('show')}
+$('barrierReminderClose').onclick=()=>{closeBarrierReminder();checkBarrierReminder()};
+$('barrierReminder').addEventListener('click',e=>{if(e.target===$('barrierReminder'))closeBarrierReminder()});
+// 탭을 늦게 복귀했을 때 지난 정각의 알림이 뒤늦게 울리지 않도록 2분 내에만 표시합니다.
+function reminderHourKey(now){return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}-${pad(now.getHours())}`}
+let lastReminderHour=reminderHourKey(new Date());
+function checkBarrierReminder(){const now=new Date(),key=reminderHourKey(now);if(key===lastReminderHour)return;if(now.getMinutes()>1){lastReminderHour=key;return}if(!state.ui.barrierReminderEnabled){lastReminderHour=key;return}if(document.hidden||$('modalBackdrop').classList.contains('show')||$('barrierReminder').classList.contains('show'))return;lastReminderHour=key;const remaining=remainingBarriers();if(remaining.length)showBarrierReminder(remaining,now)}
+setInterval(checkBarrierReminder,1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkBarrierReminder()});
+// 화면을 열어 둔 상태에서도 오전 6시 이후 표시가 갱신됩니다.
+setInterval(()=>{const now=periodKey('daily')+'|'+periodKey('weekly');if(window._mobiLastPeriod!==now){window._mobiLastPeriod=now;render()}},30000);
+
+// 공개 배포용 시작 가이드 및 7일 주기 수동 백업 권장 안내.
+// 가이드 확인 여부와 알림 날짜는 이 브라우저에만 보관합니다.
+const MOBI_GUIDE_KEY='mobiGuideAcknowledgedV1';
+const MOBI_BACKUP_CLOCK_KEY='mobiBackupReminderClockV1';
+const MOBI_LAST_BACKUP_KEY='mobiLastManualBackupV1';
+const MOBI_SEVEN_DAYS=7*24*60*60*1000;
+window.mobiGuideRequired=false;
+function mobiGetTime(key){try{const n=Number(localStorage.getItem(key));return Number.isFinite(n)&&n>0?n:0}catch(e){return 0}}
+function mobiSetTime(key,time=Date.now()){try{localStorage.setItem(key,String(time))}catch(e){}}
+function mobiMarkBackup(){mobiSetTime(MOBI_LAST_BACKUP_KEY);mobiSetTime(MOBI_BACKUP_CLOCK_KEY)}
+function mobiGuideHtml(){return `<h2>💜 뚠뚠한 모비일지 가이드</h2>
+ <p class="helper" style="margin:9px 0 14px">어소세용~! 마비노기 모바일 숙제를 편하게 챙길 수 있는 나만의 일지예용. 처음이시라면 아래 내용을 꼭 확인해 주세용!</p>
+ <div class="guide-items">
+ <p><strong>🧙 캐릭터와 숙제 관리</strong><br>캐릭터를 추가하고 일일·주간 숙제를 체크해용. 전체 집계에서 여러 캐릭터의 진행 상황을 한눈에 볼 수 있어용.</p>
+ <p><strong>🤖 뚠비서</strong><br>남은 숙제를 물어보거나 숙제 완료를 기록하고, 캐릭터 애칭도 등록할 수 있어용. 뚠비서 탭의 ❔ 도움말에서 명령어 예시를 눌러보세용.</p>
+ <p><strong>📝 메모와 설정</strong><br>메모를 남기고 글자 크기, 숙제 항목, 알림 등을 조절할 수 있어용.</p>
+ <p><strong>⚠️ 저장 방식 주의!</strong><br>이 프로그램은 로그인이나 서버 없이 작동해요. 기록은 <strong>현재 브라우저의 로컬 저장소</strong>에 저장되므로 브라우저 데이터 삭제·초기화, 다른 브라우저나 기기 사용, 파일 위치 변경 등에 따라 기록이 사라지거나 보이지 않을 수 있어용.</p>
+ <p><strong>💾 JSON 수동 백업 강력 권장</strong><br>상단의 <strong>JSON 백업</strong> 버튼으로 파일을 자주 저장해 주세요! 문제가 생기면 <strong>백업 불러오기</strong>로 복구할 수 있어용. 7일마다 백업을 권장하는 알림도 띄워드릴게용. 백업 파일은 안전한 곳에 보관해 주세용.</p>
+ </div>`}
+function mobiShowGuide(firstTime){
+ window.mobiGuideRequired=!!firstTime;
+ modal(mobiGuideHtml()+`<div class="modal-actions"><button type="button" id="mobiGuideConfirm">${firstTime?'내용 확인했어용 💜':'닫기'}</button></div>`);
+ $('modalCloseX').hidden=!!firstTime;
+ $('mobiGuideConfirm').onclick=()=>{
+  if(firstTime){try{localStorage.setItem(MOBI_GUIDE_KEY,'1')}catch(e){}if(!mobiGetTime(MOBI_BACKUP_CLOCK_KEY))mobiSetTime(MOBI_BACKUP_CLOCK_KEY)}
+  window.mobiGuideRequired=false;$('modalCloseX').hidden=false;closeModal();
+  if(firstTime)mobiCheckBackupReminder();
+ };
+}
+function mobiCheckBackupReminder(){
+ if(window.mobiGuideRequired||$('modalBackdrop').classList.contains('show'))return;
+ const now=Date.now(),last=mobiGetTime(MOBI_BACKUP_CLOCK_KEY);
+ if(!last){mobiSetTime(MOBI_BACKUP_CLOCK_KEY,now);return}
+ if(now-last<MOBI_SEVEN_DAYS)return;
+ modal(`<h2>💾 숙제 기록 백업을 권장해용!</h2><p class="helper" style="margin:12px 0">마지막 백업 또는 안내 후 7일이 지났어용. 브라우저 데이터가 삭제되면 기록이 사라질 수 있으니, <strong>JSON 파일로 수동 백업</strong>해 두시면 안심이에용! 다운로드한 파일이 실제로 저장되었는지도 확인해 주세용. 💜</p><p class="helper">7일 동안 프로그램을 열지 않았어도 다음 실행 시 바로 알려드려용.</p><div class="modal-actions"><button type="button" class="secondary" id="mobiBackupLater">나중에 할게용</button><button type="button" id="mobiBackupNow">지금 JSON 백업</button></div>`);
+ $('mobiBackupLater').onclick=()=>{mobiSetTime(MOBI_BACKUP_CLOCK_KEY);closeModal()};
+ $('mobiBackupNow').onclick=()=>{downloadBackup(state);mobiMarkBackup();closeModal()};
+}
+(function mobiInitializeGuide(){
+ // 기존 사용자도 이 가이드를 처음 보는 경우 한 번 안내합니다.
+ let acknowledged=false;try{acknowledged=localStorage.getItem(MOBI_GUIDE_KEY)==='1'}catch(e){}
+ if(!acknowledged)mobiShowGuide(true);
+ else mobiCheckBackupReminder();
+})();
+// 장시간 열린 탭도 확인하되, 가이드/다른 설정창 위에 겹쳐 띄우지 않습니다.
+setInterval(mobiCheckBackupReminder,60*60*1000);
+
+</script></body></html>
